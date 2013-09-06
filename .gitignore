@@ -1,0 +1,16 @@
+.[oa]
+*~
+.py[co]
+.doit.db
+.idea/
+
+build/
+dist/
+*.egg-info/
+
+docs/_build
+
+# Ignore all test-related files (see setup.py -> setup(tests_require=[]))
+*coverage*
+*nose*
+*node_modules*
