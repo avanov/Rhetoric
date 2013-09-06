@@ -1,6 +1,10 @@
 
 .. include:: ../README.rst
 
+.. include:: ../AUTHORS
+
+.. include:: ../CHANGES
+
 
 Indices and tables
 ==================
