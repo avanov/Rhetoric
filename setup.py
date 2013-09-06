@@ -1,12 +1,8 @@
 import io
 import os
-import sys
 
 from setuptools import find_packages
 from setuptools import setup
-
-
-PY3K = sys.version_info >= (3,0)
 
 
 def read(*filenames, **kwargs):
@@ -54,7 +50,7 @@ setup(
     download_url="https://github.com/avanov/Rhetoric",
     keywords="pyramid django routes",
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
@@ -65,8 +61,11 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Software Development :: Libraries :: Application Frameworks'
     ]
 )
