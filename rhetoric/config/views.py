@@ -2,13 +2,15 @@ from rhetoric.exceptions import ConfigurationError
 
 
 class ViewsConfiguratorMixin(object):
-    def add_view(self, view, route_name, renderer=None, request_method=None):
+    def add_view(self, view, route_name, renderer=None, request_method=None, csrf_exempt=True):
         try:
             route = self.routes[route_name]
         except KeyError:
             raise ConfigurationError(
                 'No route named {route_name} found for view registration'.format(route_name=route_name)
             )
+
+        view.csrf_exempt = csrf_exempt
         route_item = {
             'view': view
         }

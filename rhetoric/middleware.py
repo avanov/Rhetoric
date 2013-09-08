@@ -1,8 +1,18 @@
+from django.middleware.csrf import CsrfViewMiddleware
+
 from rhetoric.view import ViewCallback
 
-class UrlResolverMiddleware(object):
-    def process_view(self, request, callback, callback_args, callback_kwargs):
-        if not isinstance(callback, ViewCallback):
-            return
 
-        callback.resolve_actual_view_callable(request, callback_args, callback_kwargs)
+class CsrfProtectedViewDispatchMiddleware(CsrfViewMiddleware):
+    def process_view(self, request, callback, callback_args, callback_kwargs):
+        if isinstance(callback, ViewCallback):
+            view_settings = callback.find_view_settings(request, callback_args, callback_kwargs)
+            # Check the actual view callable rather than ViewCallback wrapper with CsrfViewMiddleware
+            return super(CsrfProtectedViewDispatchMiddleware, self).process_view(
+                request, view_settings['view'], callback_args, callback_kwargs
+            )
+
+        # The callable is not a part of Rhetoric
+        return super(CsrfProtectedViewDispatchMiddleware, self).process_view(
+            request, callback, callback_args, callback_kwargs
+        )

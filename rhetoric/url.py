@@ -97,6 +97,8 @@ extract_pattern = lambda line: _extract_braces_expression(
 def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=None):
     if rules is None:
         rules = {}
+    # Django requires us to strip a prefixed slash
+    pattern = pattern.lstrip('/')
     buf = []
     while pattern:
         result = extract_pattern(pattern)
