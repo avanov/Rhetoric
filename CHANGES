@@ -1,4 +1,14 @@
 Changelog
 ================
+* 0.1.2
+
+  * [Bugfix #2]: resolved race condition in ``rhetoric.view.ViewCallback``.
+
+  * [API]: ``rhetoric.middleware.UrlResolverMiddleware`` was renamed to
+    ``rhetoric.middleware.CsrfProtectedViewDispatchMiddleware``.
+
+  * [Django integration]: ``rhetoric.middleware.CsrfProtectedViewDispatchMiddleware`` should
+    now completely substitute ``django.middleware.csrf.CsrfViewMiddleware`` in ``MIDDLEWARE_CLASSES``.
+
 
 * 0.1.0 - initial PyPI release. Early development, unstable API.
