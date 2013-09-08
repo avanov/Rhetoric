@@ -53,8 +53,8 @@ The package shall be compatible with Python2.7, and Python3.3 or higher.
 Integration with Django
 -----------------------
 
-#. Put a string ``rhetoric.middleware.UrlResolverMiddleware`` into your
-   project's ``MIDDLEWARE_CLASSES`` list before Django's ``CsrfViewMiddleware``:
+#. Replace ``django.middleware.csrf.CsrfViewMiddleware`` with
+   ``rhetoric.middleware.CsrfProtectedViewDispatchMiddleware`` in your project's ``MIDDLEWARE_CLASSES``:
 
    .. code-block:: python
 
@@ -62,8 +62,8 @@ Integration with Django
 
         MIDDLEWARE_CLASSES = [
             # ...
-            'rhetoric.middleware.UrlResolverMiddleware',
-            'django.middleware.csrf.CsrfViewMiddleware',
+            'rhetoric.middleware.CsrfProtectedViewDispatchMiddleware',
+            #'django.middleware.csrf.CsrfViewMiddleware',
             # ...
         ]
 
@@ -85,7 +85,7 @@ Integration with Django
        # Rhetorical routing
        # ------------------
        config = Configurator()
-       config.add_route('test.new.routes', 'test/new/routes')
+       config.add_route('test.new.routes', '/test/new/routes')
        config.scan(ignore=[
            # do not scan test modules included into the project tree
            re.compile('^.*[.]?tests[.]?.*$').match,
@@ -114,3 +114,5 @@ Integration with Django
            return {
                'Hello': 'POST'
            }
+
+#. From this point you can request ``/test/new/routes`` with different methods.

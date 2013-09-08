@@ -15,7 +15,6 @@ class view_config(object):
         depth = settings.pop('_depth', 0)
 
         def callback(scanner, name, ob):
-            wrapped.csrf_exempt = settings.pop('csrf_exempt', True)
             scanner.config.add_view(view=wrapped, **settings)
 
         self.venusian.attach(wrapped, callback, category='rhetoric', depth=depth + 1)
@@ -25,22 +24,21 @@ class view_config(object):
 class ViewCallback(object):
     def __init__(self, viewlist):
         self.viewlist = viewlist
-        self.callback = None
-        self.view_settings = None
-        self.csrf_exempt = False
-
-    def resolve_actual_view_callable(self, request, args, kwargs):
-        for view_settings in self.viewlist:
-            if self.check_predicates(view_settings['predicates'], request, args, kwargs):
-                self.callback = view_settings['view']
-                self.view_settings = view_settings
-                self.csrf_exempt = self.callback.csrf_exempt
-                return
-        raise Http404
 
     def __call__(self, request, *args, **kwargs):
-        response = self.callback(request, *args, **kwargs)
-        return self.process_callback_response(response, self.view_settings)
+        view_settings = self.find_view_settings(request, args, kwargs)
+        response = view_settings['view'](request, *args, **kwargs)
+        return self.process_callback_response(response, view_settings)
+
+    def find_view_settings(self, request, args, kwargs):
+        if hasattr(request, 'rhetoric_view_settings'):
+            return getattr(request, 'rhetoric_view_settings')
+
+        for view_settings in self.viewlist:
+            if self.check_predicates(view_settings['predicates'], request, args, kwargs):
+                setattr(request, 'rhetoric_view_settings', view_settings)
+                return view_settings
+        raise Http404
 
     def check_predicates(self, predicates, request, req_args, req_kw):
         if request.method not in predicates['request_method']:
