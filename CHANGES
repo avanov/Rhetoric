@@ -1,5 +1,9 @@
 Changelog
 ================
+* 0.1.4
+
+  * Feature: added support for custom renderers.
+
 * 0.1.2
 
   * [Bugfix #2]: resolved race condition in ``rhetoric.view.ViewCallback``.
