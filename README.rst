@@ -246,9 +246,9 @@ render the returned dictionary to a JSON serialization:
 The body of the response returned by such a view will be a string
 representing the JSON serialization of the return value:
 
-.. code-block:: python
+.. code-block:: json
 
-   '{"content": "Hello!"}'
+   {"content": "Hello!"}
 
 ``.html``: Django Template Renderer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
