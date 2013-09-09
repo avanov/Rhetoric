@@ -114,8 +114,8 @@ def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=N
                 match_group_name = result
                 rule = rules.get(match_group_name)
                 if not rule:
-                    # Use a simple greedy regular expression matching everything
-                    rule = '.*'
+                    # This default pattern is Pyramid's default.
+                    rule = '[^/]+'
 
             result = u"(?P<{match_group_name}>{rule})".format(
                 match_group_name=match_group_name,

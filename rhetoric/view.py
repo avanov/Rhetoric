@@ -28,7 +28,7 @@ class ViewCallback(object):
     def __call__(self, request, *args, **kwargs):
         view_settings = self.find_view_settings(request, args, kwargs)
         response = view_settings['view'](request, *args, **kwargs)
-        return self.process_callback_response(response, view_settings)
+        return self.process_callback_response(request, response, view_settings)
 
     def find_view_settings(self, request, args, kwargs):
         if hasattr(request, 'rhetoric_view_settings'):
@@ -45,12 +45,12 @@ class ViewCallback(object):
             return False
         return True
 
-    def process_callback_response(self, response, view_settings):
+    def process_callback_response(self, request, response, view_settings):
         if isinstance(response, HttpResponse):
             # Do not process standard django responses
             return response
         renderer = view_settings['renderer']
-        return renderer(response)
+        return renderer(request, response)
 
 
 class RegexURLPattern(DjangoRegexURLPattern):

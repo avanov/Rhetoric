@@ -3,7 +3,7 @@ from collections import OrderedDict
 import venusian
 
 from rhetoric.config.rendering import RenderingConfiguratorMixin
-from rhetoric.config.rendering import DEFAULT_RENDERERS
+from rhetoric.config.rendering import BUILTIN_RENDERERS
 from rhetoric.config.routes import RoutesConfiguratorMixin
 from rhetoric.config.views import ViewsConfiguratorMixin
 from rhetoric.path import caller_package
@@ -52,7 +52,7 @@ class Configurator(
     def setup_registry(self):
         # Add default renderers
         # ---------------------
-        for name, renderer in DEFAULT_RENDERERS.items():
+        for name, renderer in BUILTIN_RENDERERS.items():
             self.add_renderer(name, renderer)
 
     def check_consistency(self):
