@@ -1,4 +1,4 @@
-from django.core.urlresolvers import ResolverMatch, LocaleRegexProvider
+from django.core.urlresolvers import RegexURLPattern as DjangoRegexURLPattern
 from django.http import HttpResponse, Http404
 
 import venusian
@@ -53,27 +53,7 @@ class ViewCallback(object):
         return renderer(response)
 
 
-class RegexURLPattern(LocaleRegexProvider):
+class RegexURLPattern(DjangoRegexURLPattern):
     def __init__(self, regex, default_args=None, name=None, viewlist=None):
-        LocaleRegexProvider.__init__(self, regex)
-        self.default_args = default_args or {}
-        self.name = name
+        super(RegexURLPattern, self).__init__(regex, ViewCallback(viewlist), default_args, name)
         self.viewlist = viewlist
-
-
-    def resolve(self, path):
-        match = self.regex.search(path)
-        if match:
-            # If there are any named groups, use those as kwargs, ignoring
-            # non-named groups. Otherwise, pass all non-named arguments as
-            # positional arguments.
-            kwargs = match.groupdict()
-            if kwargs:
-                args = ()
-            else:
-                args = match.groups()
-            # In both cases, pass any extra_kwargs as **kwargs.
-            kwargs.update(self.default_args)
-
-            callback = ViewCallback(self.viewlist)
-            return ResolverMatch(callback, args, kwargs, self.name)

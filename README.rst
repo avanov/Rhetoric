@@ -85,7 +85,7 @@ Integration with Django
        # Rhetorical routing
        # ------------------
        config = Configurator()
-       config.add_route('test.new.routes', '/test/new/routes')
+       config.add_route('test.new.routes', '/test/new/routes/{param:[a-z]+}')
        config.scan(ignore=[
            # do not scan test modules included into the project tree
            re.compile('^.*[.]?tests[.]?.*$').match,
@@ -104,15 +104,15 @@ Integration with Django
 
 
        @view_config(route_name="test.new.routes", renderer='json')
-       def view_get(request):
+       def view_get(request, param):
            return {
-               'Hello': 'GET'
+               'Hello': param
            }
 
        @view_config(route_name="test.new.routes", renderer='json', request_method='POST')
-       def view_post(request):
+       def view_post(request, param):
            return {
                'Hello': 'POST'
            }
 
-#. From this point you can request ``/test/new/routes`` with different methods.
+#. From this point you can request ``/test/new/routes/<param>`` with different methods.
