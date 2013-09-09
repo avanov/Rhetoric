@@ -2,7 +2,7 @@ from rhetoric.exceptions import ConfigurationError
 
 
 class ViewsConfiguratorMixin(object):
-    def add_view(self, view, route_name, renderer=None, request_method=None, csrf_exempt=True):
+    def add_view(self, view, route_name, renderer=None, request_method=None, check_csrf=False):
         try:
             route = self.routes[route_name]
         except KeyError:
@@ -10,7 +10,8 @@ class ViewsConfiguratorMixin(object):
                 'No route named {route_name} found for view registration'.format(route_name=route_name)
             )
 
-        view.csrf_exempt = csrf_exempt
+        # csrf_exempt is used by Django CSRF Middleware
+        view.csrf_exempt = not check_csrf
         route_item = {
             'view': view
         }
