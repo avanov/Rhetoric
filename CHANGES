@@ -1,5 +1,9 @@
 Changelog
 ================
+* 0.1.5
+
+  * Feature: added support for ``decorator`` argument of view_config.
+
 * 0.1.4
 
   * Feature: added support for custom renderers.
