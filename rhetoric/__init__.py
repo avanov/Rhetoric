@@ -1,5 +1,7 @@
 from collections import OrderedDict
+import inspect
 
+import pkg_resources
 import venusian
 
 from rhetoric.config.rendering import RenderingConfiguratorMixin
@@ -21,12 +23,46 @@ class Configurator(
     RenderingConfiguratorMixin):
 
     venusian = venusian
+    inspect = inspect
 
-    def __init__(self):
+    def __init__(self, route_prefix=None):
+        if route_prefix is None:
+            route_prefix = ''
+        self.route_prefix = route_prefix
+
         self.routes = OrderedDict()
         self.renderers = {}
 
         self.setup_registry()
+
+    def include(self, callable, route_prefix=None):
+        if route_prefix is None:
+            route_prefix = ''
+
+        old_route_prefix = self.route_prefix
+        route_prefix = u'{}/{}'.format(old_route_prefix.rstrip('/'), route_prefix.lstrip('/'))
+        self.set_route_prefix(route_prefix)
+
+        c = self.maybe_dotted(callable)
+        module = self.inspect.getmodule(c)
+        if module is c:
+            try:
+                c = getattr(module, 'includeme')
+            except AttributeError:
+                raise ConfigurationError(
+                    "module {} has no attribute 'includeme'".format(module.__name__)
+                )
+
+        sourcefile = self.inspect.getsourcefile(c)
+
+        if sourcefile is None:
+            raise ConfigurationError(
+                'No source file for module {} (.py file must exist, '
+                'refusing to use orphan .pyc or .pyo file).'.format(module.__name__)
+            )
+
+        c(self)
+        self.set_route_prefix(old_route_prefix)
 
     def django_urls(self):
         """Converts registered routes to a list of Django URLs"""
@@ -67,3 +103,18 @@ class Configurator(
                     raise ConfigurationError(
                         'Route name "{name}" is not associated with a view callable.'.format(name=route_name)
                     )
+
+    def maybe_dotted(self, dotted):
+        if not isinstance(dotted, str):
+            return dotted
+        return self._pkg_resources_style(dotted)
+
+    def _pkg_resources_style(self, value):
+        """
+        This method is taken from Pyramid Web Framework.
+        package.module:attr style
+        """
+        return pkg_resources.EntryPoint.parse('x={}'.format(value)).load(False)
+
+    def set_route_prefix(self, prefix):
+        self.route_prefix = prefix
