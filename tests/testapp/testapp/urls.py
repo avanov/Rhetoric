@@ -17,7 +17,8 @@ urlpatterns = patterns('',
 # Rhetorical routing
 # ------------------
 config = Configurator()
-config.add_route('test.new.routes', '/test/new/routes/{param:[a-z]+}')
+config.include('tests.testapp.testapp.index')
+config.include('tests.testapp.testapp.blog', '/blog')
 config.scan(ignore=[
     # do not scan settings modules
     re.compile('^project_name.settings[_]?[_a-z09]*$').match,
