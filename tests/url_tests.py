@@ -24,6 +24,11 @@ class URLTest(BaseTestCase):
         assert response.status_code == 200
         assert response.content.decode('utf-8').strip() == 'Dashboard POST'
 
+        # Test PUT to the same URL
+        response = self.client.put('/dashboard')
+        assert response.status_code == 200
+        assert response.content.decode('utf-8').strip() == 'Dashboard PUT'
+
     def test_non_rhetoric_urls(self):
         response = self.client.get('/admin/')
         assert response.status_code == 200
