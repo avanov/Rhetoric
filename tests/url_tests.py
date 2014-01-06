@@ -17,7 +17,12 @@ class URLTest(BaseTestCase):
     def test_dashboard_requests(self):
         response = self.client.get('/dashboard')
         assert response.status_code == 200
-        assert response.content.decode('utf-8').strip() == 'Dashboard'
+        assert response.content.decode('utf-8').strip() == 'Dashboard GET'
+
+        # Test POST to the same URL
+        response = self.client.post('/dashboard')
+        assert response.status_code == 200
+        assert response.content.decode('utf-8').strip() == 'Dashboard POST'
 
     def test_non_rhetoric_urls(self):
         response = self.client.get('/admin/')
