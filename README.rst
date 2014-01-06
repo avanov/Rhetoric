@@ -7,6 +7,12 @@ Rhetoric
 .. image:: https://pypip.in/d/Rhetoric/badge.png
         :target: https://crate.io/packages/Rhetoric
 
+.. image:: https://api.travis-ci.org/avanov/Rhetoric.png
+        :target: https://travis-ci.org/avanov/Rhetoric
+
+.. image:: https://coveralls.io/repos/avanov/Rhetoric/badge.png?branch=develop
+        :target: https://coveralls.io/r/avanov/Rhetoric?branch=develop
+
 Status: **Early Development, Unstable API**.
 
 Naive implementation of Pyramid-like routes for Django projects.

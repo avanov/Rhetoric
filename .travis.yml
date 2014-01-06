@@ -1,8 +1,13 @@
 ---
 language: python
+install:
+  - pip install coveralls
 python:
   - "2.7"
   - "3.3"
 
-# command to run tests
-script: python setup.py nosetests
+# --source specifies what packages to cover, you probably want to use that option
+script:
+    coverage run --source=rhetoric setup.py test
+
+after_success: coveralls

@@ -1,8 +1,10 @@
 import io
 import os
+import sys
 
 from setuptools import find_packages
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 
 def read(*filenames, **kwargs):
@@ -21,22 +23,42 @@ long_description = read(
 )
 
 
+# Additional Hooks
+# ----------------------------
+# Integrate py.test with setup.py:
+# http://pytest.org/latest/goodpractises.html#integration-with-setuptools-test-commands
+
+class PyTest(TestCommand):
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
+
+
 setup(
     name='Rhetoric',
-    version='0.1.6',
+    version='0.1.7',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Django>=1.4',
         'venusian>=1.0a8',
     ],
-    setup_requires=['nose>=1.1.2'],
-    tests_require=['coverage'],
+    tests_require=['pytest', 'coverage'],
     package_data={
         # If any package contains *.txt or *.rst files, include them
         '': ['*.txt', '*.rst',]
     },
     include_package_data=True,
-
+    cmdclass={
+        'test': PyTest,
+    },
     # PyPI metadata
     # Read more at http://docs.python.org/distutils/setupscript.html#meta-data
     author="Maxim Avanov",
