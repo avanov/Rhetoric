@@ -11,5 +11,5 @@ class URLTest(BaseTestCase):
         self.assertIn('test.new.routes', route_names)
 
     def test_requests(self):
-        request = self.client.get('/test/new/routes/abc')
-
+        response = self.client.get('/blog/test/new/routes/abc')
+        assert response.status_code == 200
