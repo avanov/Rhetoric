@@ -50,6 +50,7 @@ setup(
         'Django>=1.4',
         'venusian>=1.0a8',
     ],
+    test_suite='tests',
     tests_require=['pytest', 'coverage'],
     package_data={
         # If any package contains *.txt or *.rst files, include them

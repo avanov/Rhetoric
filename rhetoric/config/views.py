@@ -2,7 +2,7 @@ from rhetoric.exceptions import ConfigurationError
 
 
 class ViewsConfiguratorMixin(object):
-    def add_view(self, view, route_name, renderer=None, request_method=None, decorator=None, check_csrf=False):
+    def add_view(self, view, route_name, request_method=None, api_version=None, decorator=None, check_csrf=False, renderer=None):
         try:
             route = self.routes[route_name]
         except KeyError:
@@ -42,7 +42,13 @@ class ViewsConfiguratorMixin(object):
             request_method = {request_method}
         request_method = set(request_method)
 
+        if api_version is not None:
+            if isinstance(api_version, str):
+                api_version = {api_version}
+            api_version = set(api_version)
+
         route_item['predicates'] = {
-            'request_method': request_method
+            'request_method': request_method,
+            'api_version': api_version
         }
         route['viewlist'].append(route_item)
