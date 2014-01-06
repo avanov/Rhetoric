@@ -4,7 +4,7 @@ from rhetoric.view import RegexURLPattern
 from django.core.urlresolvers import reverse
 
 
-#A replacement marker in a pattern must begin with an uppercase or
+# A replacement marker in a pattern must begin with an uppercase or
 # lowercase ASCII letter or an underscore, and can be composed only
 # of uppercase or lowercase ASCII letters, underscores, and numbers.
 # For example: a, a_b, _b, and b9 are all valid replacement marker names, but 0a is not.
@@ -95,6 +95,18 @@ extract_pattern = lambda line: _extract_braces_expression(
 
 
 def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=None):
+    """
+
+    :param name: Route Name
+    :type name: str
+    :param pattern: URL pattern
+    :type pattern: str
+    :param rules:
+    :type rules: dict
+    :param extra_kwargs:
+    :param viewlist:
+    :return:
+    """
     if rules is None:
         rules = {}
     # Django requires us to strip a prefixed slash
@@ -135,4 +147,11 @@ def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=N
 
 
 def route_path(route_name, *elements, **kw):
+    """
+
+    :param route_name:
+    :param elements:
+    :param kw:
+    :return:
+    """
     return reverse(route_name, args=elements, kwargs=kw)

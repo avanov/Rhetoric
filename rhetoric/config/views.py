@@ -31,7 +31,7 @@ class ViewsConfiguratorMixin(object):
         }
 
         if renderer is None:
-            renderer = ''
+            renderer = 'string'
         route_item['renderer'] = self.get_renderer(renderer)
 
         # Register predicates
