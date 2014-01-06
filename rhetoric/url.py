@@ -10,34 +10,6 @@ from django.core.urlresolvers import reverse
 # For example: a, a_b, _b, and b9 are all valid replacement marker names, but 0a is not.
 ROUTE_PATTERN_OPEN_BRACES_RE = re.compile('(?P<start_brace>\{).*')
 ROUTE_PATTERN_CLOSING_BRACES_RE = re.compile('\}.*')
-QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
-
-
-def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
-    """
-    This function is taken from Plim package: https://pypi.python.org/pypi/Plim/
-
-    ``line`` may be empty
-
-    :param line:
-    :param escape_char:
-    """
-    match = quotes_re.match(line)
-    if not match: return None
-
-    find_seq = match.group('quote_type')
-    find_seq_len = len(find_seq)
-    pos = find_seq_len
-    line_len = len(line)
-
-    while pos < line_len:
-        if line[pos] == escape_char:
-            pos += 2
-            continue
-        if line[pos:].startswith(find_seq):
-            return pos + find_seq_len
-        pos += 1
-    return None
 
 
 def _extract_braces_expression(line, starting_braces_re, open_braces_re, closing_braces_re):
@@ -73,12 +45,6 @@ def _extract_braces_expression(line, starting_braces_re, open_braces_re, closing
             braces_counter += 1
             buf.append(current_char)
             tail = tail[1:]
-            continue
-
-        result = search_quotes(tail)
-        if result is not None:
-            buf.append(tail[:result])
-            tail = tail[result:]
             continue
 
         buf.append(current_char)
