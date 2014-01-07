@@ -10,5 +10,8 @@ class BaseTestCase(unittest.TestCase):
         from django.test.client import Client
         import rhetoric
 
-        self.client = Client()
+        DEFAULT_HEADERS = {
+            'X-API-VERSION': '1.0'
+        }
+        self.client = Client(**DEFAULT_HEADERS)
         self.rhetoric = rhetoric

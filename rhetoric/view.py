@@ -3,6 +3,8 @@ from django.http import HttpResponse, Http404
 
 import venusian
 
+from rhetoric.predicates import match_api_version
+
 
 class view_config(object):
     venusian = venusian
@@ -22,6 +24,9 @@ class view_config(object):
 
 
 class ViewCallback(object):
+    """ Wrapper object around actual view callables that checks predicates during the request
+    and processes results returned from view callables during the response.
+    """
     def __init__(self, viewlist):
         self.viewlist = viewlist
 
@@ -34,15 +39,32 @@ class ViewCallback(object):
         if hasattr(request, 'rhetoric_view_settings'):
             return getattr(request, 'rhetoric_view_settings')
 
+        # cache
         for view_settings in self.viewlist:
-            if self.check_predicates(view_settings['predicates'], request, args, kwargs):
+            if self.check_predicates(view_settings, request, args, kwargs):
                 setattr(request, 'rhetoric_view_settings', view_settings)
                 return view_settings
         raise Http404
 
-    def check_predicates(self, predicates, request, req_args, req_kw):
+    def check_predicates(self, view_settings, request, req_args, req_kw):
+        predicates = view_settings['predicates']
+
+        # request method
         if request.method not in predicates['request_method']:
             return False
+
+        # api version
+        api_version_getter = view_settings['api_version_getter']
+        if predicates['api_version'] and api_version_getter:
+            request_api_version = api_version_getter(request)
+            match = False
+            for allowed_api_pattern in predicates['api_version']:
+                match = match_api_version(request_api_version, allowed_api_pattern)
+                if match:
+                    break
+            if not match:
+                return False
+
         return True
 
     def process_callback_response(self, request, response, view_settings):

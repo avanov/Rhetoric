@@ -27,7 +27,8 @@ class ViewsConfiguratorMixin(object):
         # csrf_exempt is used by Django CSRF Middleware
         view.csrf_exempt = not check_csrf
         route_item = {
-            'view': view
+            'view': view,
+            'api_version_getter': self.api_version_getter
         }
 
         if renderer is None:

@@ -32,3 +32,32 @@ def post_on_dashboard(request):
              decorator=(phony_decorator, phony_decorator))
 def put_on_dashboard(request):
     return {'method': 'PUT'}
+
+
+# Versioned views
+# --------------------------------
+@view_config(route_name='index.versions', request_method='GET', api_version='1.0', renderer='json')
+def get_version_1(request):
+    return {
+        'version': '1.0'
+    }
+
+@view_config(route_name='index.versions', request_method='GET', api_version='>1.0, <2.0', renderer='json')
+def get_version_1_range(request):
+    return {
+        'method': 'GET',
+        'version': '>1.0, <2.0'
+    }
+
+@view_config(route_name='index.versions', request_method='POST', api_version='>1.0, <2.0', renderer='json')
+def post_version_1_range(request):
+    return {
+        'method': 'POST',
+        'version': '>1.0, <2.0'
+    }
+
+@view_config(route_name='index.versions', request_method='POST', api_version='>=2.0', renderer='json')
+def post_version_2_range(request):
+    return {
+        'version': '>=2.0'
+    }
