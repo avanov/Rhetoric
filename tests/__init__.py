@@ -8,5 +8,7 @@ class BaseTestCase(unittest.TestCase):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.testapp.testapp.settings")
 
         from django.test.client import Client
+        import rhetoric
 
         self.client = Client()
+        self.rhetoric = rhetoric

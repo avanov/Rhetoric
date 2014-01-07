@@ -32,3 +32,7 @@ class URLTest(BaseTestCase):
     def test_non_rhetoric_urls(self):
         response = self.client.get('/admin/')
         assert response.status_code == 200
+
+    def test_route_path(self):
+        url = self.rhetoric.url.route_path('index.dashboard')
+        assert url == '/dashboard'
