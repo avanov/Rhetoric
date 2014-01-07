@@ -5,6 +5,8 @@ from django.contrib import admin
 
 from rhetoric import Configurator
 
+from tests.testapp.testapp.blog import includeme as blog_config
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -18,7 +20,7 @@ urlpatterns = patterns('',
 # ------------------
 config = Configurator()
 config.include('tests.testapp.testapp.index')
-config.include('tests.testapp.testapp.blog', '/blog')
+config.include(blog_config, '/blog')
 config.scan(ignore=[
     # do not scan settings modules
     re.compile('^project_name.settings[_]?[_a-z09]*$').match,
