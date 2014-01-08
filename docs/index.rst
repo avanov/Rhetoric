@@ -296,6 +296,8 @@ Varying Attributes of Rendered Responses
    `Pyramid Renderers documentation <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/renderers.html#varying-attributes-of-rendered-responses>`_,
    since Rhetoric provides almost the same API.
 
+.. versionadded:: 0.1.8
+
 Before a response constructed by a :term:`renderer` is returned to
 :app:`Django`, several attributes of the request are examined which have the
 potential to influence response behavior.
