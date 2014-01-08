@@ -329,15 +329,15 @@ methods, instead of this:
 
        @view_config(route_name='rest', request_method='GET', renderer='json')
        def get(self):
-           return {'method: 'GET'}
+           return {'method': 'GET'}
 
        @view_config(route_name='rest', request_method='POST', renderer='json')
        def post(self):
-           return {'method: 'POST'}
+           return {'method': 'POST'}
 
        @view_config(route_name='rest', request_method='DELETE', renderer='json')
        def delete(self):
-           return {'method: 'DELETE'}
+           return {'method': 'DELETE'}
 
 You can do this:
 
@@ -354,15 +354,15 @@ You can do this:
 
        @view_config(request_method='GET')
        def get(self):
-           return {'method: 'GET'}
+           return {'method': 'GET'}
 
        @view_config(request_method='POST')
        def post(self):
-           return {'method: 'POST'}
+           return {'method': 'POST'}
 
        @view_config(request_method='DELETE')
        def delete(self):
-           return {'method: 'DELETE'}
+           return {'method': 'DELETE'}
 
 In the above example, we were able to take the ``route_name='rest'`` and
 ``renderer='json'`` arguments out of the call to each individual ``@view_config``
