@@ -289,6 +289,63 @@ used, the view must return a HttpResponse object or a Python *dictionary*.  The
 dictionary items will then be used as the template context objects.
 
 
+Varying Attributes of Rendered Responses
+----------------------------------------
+
+.. note:: This section is partly copied from the
+   `Pyramid Renderers documentation <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/renderers.html#varying-attributes-of-rendered-responses>`_,
+   since Rhetoric provides almost the same API.
+
+Before a response constructed by a :term:`renderer` is returned to
+:app:`Django`, several attributes of the request are examined which have the
+potential to influence response behavior.
+
+View callables that don't directly return a response should use the API of
+the :class:`django.http.HttpResponse` attribute available as
+``request.response`` during their execution, to influence associated response
+behavior.
+
+For example, if you need to change the response status from within a view
+callable that uses a renderer, assign the ``status_code`` attribute to the
+``response`` attribute of the request before returning a result:
+
+.. code-block:: python
+   :linenos:
+
+   from rhetoric import view_config
+
+   @view_config(name='dashboard', renderer='dashboard.html')
+   def myview(request):
+       request.response.status_code = 404
+       return {'URL': request.get_full_path()}
+
+Note that mutations of ``request.response`` in views which return a HttpResponse
+object directly will have no effect unless the response object returned *is*
+``request.response``.  For example, the following example calls
+``request.response.set_cookie``, but this call will have no effect, because a
+different Response object is returned.
+
+.. code-block:: python
+   :linenos:
+
+   from django.http import HttpResponse
+
+   def view(request):
+       request.response.set_cookie('abc', '123') # this has no effect
+       return HttpResponse('OK') # because we're returning a different response
+
+If you mutate ``request.response`` and you'd like the mutations to have an
+effect, you must return ``request.response``:
+
+.. code-block:: python
+   :linenos:
+
+   def view(request):
+       request.response.set_cookie('abc', '123')
+       return request.response
+
+
+
 Predicates
 ============================
 
