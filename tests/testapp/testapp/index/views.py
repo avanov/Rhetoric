@@ -2,6 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.http import require_GET, require_POST
 
 from rhetoric import view_config
+from rhetoric import view_defaults
 
 
 def phony_decorator(view):
@@ -61,3 +62,16 @@ def post_version_2_range(request):
     return {
         'version': '>=2.0'
     }
+
+
+@view_defaults(route_name='index.dashboard.api', renderer='json')
+class DashboardAPI(object):
+
+    def __init__(self, request, *args, **kw):
+        self.request = request
+
+    @view_config(request_method='GET')
+    def get_dashboard_items(self):
+        return {
+            'method': self.request.method
+        }

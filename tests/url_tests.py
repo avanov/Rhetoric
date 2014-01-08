@@ -14,6 +14,9 @@ class URLTest(BaseTestCase):
         json_data = response.content.decode('utf-8')
         assert {'page_slug':'page-slug'} == json.loads(json_data)
 
+        response = self.client.post('/blog/page/page-slug')
+        assert response.status_code == 200
+
     def test_dashboard_requests(self):
         response = self.client.get('/dashboard')
         assert response.status_code == 200

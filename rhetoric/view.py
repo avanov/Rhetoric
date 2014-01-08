@@ -16,10 +16,32 @@ class view_config(object):
         settings = self.__dict__.copy()
         depth = settings.pop('_depth', 0)
 
-        def callback(scanner, name, ob):
-            scanner.config.add_view(view=wrapped, **settings)
+        def callback(scanner, name, obj):
+            scanner.config.add_view(view=obj, **settings)
 
-        self.venusian.attach(wrapped, callback, category='rhetoric', depth=depth + 1)
+        info = self.venusian.attach(wrapped, callback, category='rhetoric', depth=depth + 1)
+        if info.scope == 'class':
+            # if the decorator was attached to a method in a class, or
+            # otherwise executed at class scope, we need to set an
+            # 'attr' into the settings if one isn't already in there
+            if settings.get('attr') is None:
+                settings['attr'] = wrapped.__name__
+        return wrapped
+
+
+class view_defaults(view_config):
+    """ This object is a copy of ``pyramid.view.view_defaults``.
+
+    A class :term:`decorator` which, when applied to a class, will
+    provide defaults for all view configurations that use the class. This
+    decorator accepts all the arguments accepted by
+    :meth:`pyramid.view.view_config`, and each has the same meaning.
+
+    See :ref:`view_defaults` for more information.
+    """
+
+    def __call__(self, wrapped):
+        wrapped.__view_defaults__ = self.__dict__.copy()
         return wrapped
 
 

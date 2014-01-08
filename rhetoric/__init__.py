@@ -11,10 +11,11 @@ from rhetoric.config.views import ViewsConfiguratorMixin
 from rhetoric.path import caller_package
 from rhetoric.exceptions import ConfigurationError
 from rhetoric.view import view_config
+from rhetoric.view import view_defaults
 from rhetoric.url import route_path, create_django_route
 
 
-__all__ = ['route_path', 'view_config', 'Configurator']
+__all__ = ['route_path', 'view_config', 'view_defaults', 'Configurator']
 
 
 class Configurator(

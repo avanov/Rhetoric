@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rhetoric import view_config
 
 
@@ -21,3 +22,8 @@ def blog_page(request, page_slug):
     return {
         'page_slug': page_slug
     }
+
+
+@view_config(route_name='blog.page', request_method='POST', renderer='json')
+def blog_page_post(request, page_slug):
+    return HttpResponse(page_slug)
