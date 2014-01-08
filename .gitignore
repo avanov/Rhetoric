@@ -17,3 +17,6 @@ docs/_build
 *node_modules*
 # but keep the .coveragerc (for TravisCI/Coveralls services)
 !.coveragerc
+
+# test data
+*.sqlite3
