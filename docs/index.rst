@@ -63,63 +63,66 @@ Integration with Django
    ``rhetoric.middleware.CsrfProtectedViewDispatchMiddleware`` in your project's ``MIDDLEWARE_CLASSES``:
 
    .. code-block:: python
+      :linenos:
 
-        # somewhere in a project_name.settings module
+      # somewhere in a project_name.settings module
 
-        MIDDLEWARE_CLASSES = [
-            # ...
-            'rhetoric.middleware.CsrfProtectedViewDispatchMiddleware',
-            #'django.middleware.csrf.CsrfViewMiddleware',
-            # ...
-        ]
+      MIDDLEWARE_CLASSES = [
+          # ...
+          'rhetoric.middleware.CsrfProtectedViewDispatchMiddleware',
+          #'django.middleware.csrf.CsrfViewMiddleware',
+          # ...
+      ]
 
 #. Inside the project's `root urlconf <https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-ROOT_URLCONF>`_
    (usually ``project_name.urls``):
 
    .. code-block:: python
+      :linenos:
 
-       from django.conf.urls import patterns, include, url
-       # ... other imports ...
-       from rhetoric import Configurator
+      from django.conf.urls import patterns, include, url
+      # ... other imports ...
+      from rhetoric import Configurator
 
-       # ... various definitions ...
+      # ... various definitions ...
 
-       urlpatterns = patterns('',
-           # ... a number of standard django url definitions ...
-       )
+      urlpatterns = patterns('',
+          # ... a number of standard django url definitions ...
+      )
 
-       # Rhetorical routing
-       # ------------------
-       config = Configurator()
-       config.add_route('test.new.routes', '/test/new/routes/{param:[a-z]+}')
-       config.scan(ignore=[
-           # do not scan test modules included into the project tree
-           re.compile('^.*[.]?tests[.]?.*$').match,
-           # do not scan settings modules
-           re.compile('^project_name.settings[_]?[_a-z09]*$').match,
-       ])
-       urlpatterns.extend(config.django_urls())
+      # Rhetorical routing
+      # ------------------
+      config = Configurator()
+      config.add_route('test.new.routes', '/test/new/routes/{param:[a-z]+}')
+      config.scan(ignore=[
+          # do not scan test modules included into the project tree
+          re.compile('^.*[.]?tests[.]?.*$').match,
+          # do not scan settings modules
+          re.compile('^project_name.settings[_]?[_a-z09]*$').match,
+      ])
+      urlpatterns.extend(config.django_urls())
 
 #. Register views:
 
    .. code-block:: python
+      :linenos:
 
-       # project_name.some_app.some_module
+      # project_name.some_app.some_module
 
-       from rhetoric import view_config
+      from rhetoric import view_config
 
 
-       @view_config(route_name="test.new.routes", renderer='json')
-       def view_get(request, param):
-           return {
-               'Hello': param
-           }
+      @view_config(route_name="test.new.routes", renderer='json')
+      def view_get(request, param):
+          return {
+              'Hello': param
+          }
 
-       @view_config(route_name="test.new.routes", renderer='json', request_method='POST')
-       def view_post(request, param):
-           return {
-               'Hello': 'POST'
-           }
+      @view_config(route_name="test.new.routes", renderer='json', request_method='POST')
+      def view_post(request, param):
+          return {
+              'Hello': 'POST'
+          }
 
 #. From this point you can request ``/test/new/routes/<param>`` with different methods.
 
@@ -231,6 +234,7 @@ Predicate Arguments
 ``request_method``
 
 ``api_version``
+
     .. versionadded:: 0.1.7
 
 
@@ -299,7 +303,7 @@ Varying Attributes of Rendered Responses
 .. versionadded:: 0.1.8
 
 Before a response constructed by a :term:`renderer` is returned to
-:app:`Django`, several attributes of the request are examined which have the
+``Django``, several attributes of the request are examined which have the
 potential to influence response behavior.
 
 View callables that don't directly return a response should use the API of
