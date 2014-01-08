@@ -64,8 +64,8 @@ def post_version_2_range(request):
     }
 
 
-@view_defaults(route_name='index.dashboard.api', renderer='json')
-class DashboardAPI(object):
+@view_defaults(route_name='index.dashboard.api', renderer='json', api_version='>=1.0, <2.0')
+class DashboardAPIv1(object):
 
     def __init__(self, request, *args, **kw):
         self.request = request
@@ -73,5 +73,34 @@ class DashboardAPI(object):
     @view_config(request_method='GET')
     def get_dashboard_items(self):
         return {
-            'method': self.request.method
+            'version': 1,
+            'method': 'GET'
+        }
+
+    @view_config(request_method='POST')
+    def post_dashboard_items(self):
+        return {
+            'version': 1,
+            'method': 'POST'
+        }
+
+
+@view_defaults(route_name='index.dashboard.api', renderer='json', api_version='>=2.0')
+class DashboardAPIv2(object):
+
+    def __init__(self, request, *args, **kw):
+        self.request = request
+
+    @view_config(request_method='GET')
+    def get_dashboard_items(self):
+        return {
+            'version': 2,
+            'method': 'GET'
+        }
+
+    @view_config(request_method='POST')
+    def post_dashboard_items(self):
+        return {
+            'version': 2,
+            'method': 'POST'
         }
