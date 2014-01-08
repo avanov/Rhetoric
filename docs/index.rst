@@ -1,6 +1,6 @@
-
+====================
 Rhetoric
-=============
+====================
 
 .. image:: https://pypip.in/v/Rhetoric/badge.png
         :target: https://crate.io/packages/Rhetoric
@@ -8,13 +8,19 @@ Rhetoric
 .. image:: https://pypip.in/d/Rhetoric/badge.png
         :target: https://crate.io/packages/Rhetoric
 
+.. image:: https://api.travis-ci.org/avanov/Rhetoric.png
+        :target: https://travis-ci.org/avanov/Rhetoric
+
+.. image:: https://coveralls.io/repos/avanov/Rhetoric/badge.png?branch=develop
+        :target: https://coveralls.io/r/avanov/Rhetoric?branch=develop
+
 Status: **Beta, Unstable API**.
 
 Naive implementation of Pyramid-like routes for Django projects.
 
 
 Why it is worth your while
---------------------------
+==========================
 
 There's a great article on why Pyramid routing subsystem is so convenient for
 web developers -
@@ -32,7 +38,7 @@ and if you liked the idea behind Rhetoric URL Dispatcher, please consider
 
 
 Project premises
-----------------
+================
 
 * Rhetoric components try to follow corresponding Pyramid components whenever possible.
 * Integration with django applications shall be transparent to existing code whenever possible.
@@ -40,7 +46,7 @@ Project premises
   naivety of the implementation and limitations imposed by the compatibility with Django API.
 
 Installation
--------------
+=============
 
 Rhetoric is available as a PyPI package:
 
@@ -51,7 +57,7 @@ Rhetoric is available as a PyPI package:
 The package shall be compatible with Python2.7, and Python3.3 or higher.
 
 Integration with Django
------------------------
+=======================
 
 #. Replace ``django.middleware.csrf.CsrfViewMiddleware`` with
    ``rhetoric.middleware.CsrfProtectedViewDispatchMiddleware`` in your project's ``MIDDLEWARE_CLASSES``:
@@ -119,7 +125,7 @@ Integration with Django
 
 
 Route Pattern Syntax
---------------------
+====================
 
 .. note:: This section is copied from
    `Pyramid Docs <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#route-pattern-syntax>`_,
@@ -229,7 +235,7 @@ Predicate Arguments
 
 
 Renderers
-------------------
+===========================
 
 .. note:: This section is copied from the
    `Pyramid Renderers documentation <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/renderers.html#renderers>`_,
@@ -284,7 +290,7 @@ dictionary items will then be used as the template context objects.
 
 
 Predicates
------------------------------
+============================
 
 request_method
 ~~~~~~~~~~~~~~
@@ -294,7 +300,7 @@ api_version
 
 
 @view_defaults Class Decorator
-------------------------------
+===============================
 
 .. note:: This section is copied from
    `Pyramid Docs <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/viewconfig.html#view-defaults-class-decorator>`_,
