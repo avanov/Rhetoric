@@ -13,8 +13,8 @@ Status: **Early Development, Unstable API**.
 Naive implementation of Pyramid-like routes for Django projects.
 
 
-Why is it worth your while?
----------------------------
+Why it is worth your while
+--------------------------
 
 There's a great article on why Pyramid routing subsystem is so convenient for
 web developers -
@@ -26,10 +26,9 @@ provided by these frameworks. And I totally agree with the key points of the art
 are more flexible and convenient for developers writing RESTful services.
 
 The lack of flexibility of standard Django url dispatcher motivated me to
-create this project. I hope it will be useful for you, other django developers,
+create this project. I hope it will be useful for you,
 and if you liked the idea behind Rhetoric URL Dispatcher, please consider
 `Pyramid Web Framework <http://www.pylonsproject.org/>`_ for one of your future projects.
-It has a dozen of features I'd like to see in Django.
 
 
 Project premises
@@ -205,6 +204,30 @@ replacement marker.  For example, for the URL ``/abc/``:
 - ``/{foo}/`` will match.
 
 
+View Configuration Parameters
+==============================
+
+.. note:: This section is partly copied from the
+   `Pyramid documentation <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/viewconfig.html#view-configuration-parameters>`_,
+   since Rhetoric provides almost the same functionality.
+
+
+Non-Predicate Arguments
+-----------------------
+
+``renderer``
+
+Predicate Arguments
+-----------------------
+
+``route_name``
+
+``request_method``
+
+``api_version``
+    .. versionadded:: 0.1.7
+
+
 Renderers
 ------------------
 
@@ -258,6 +281,90 @@ representing the JSON serialization of the return value:
 The ``.html`` template renderer renders views using the standard Django template language. When
 used, the view must return a HttpResponse object or a Python *dictionary*.  The
 dictionary items will then be used as the template context objects.
+
+
+Predicates
+-----------------------------
+
+request_method
+~~~~~~~~~~~~~~
+
+api_version
+~~~~~~~~~~~
+
+
+@view_defaults Class Decorator
+------------------------------
+
+.. note:: This section is copied from
+   `Pyramid Docs <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/viewconfig.html#view-defaults-class-decorator>`_,
+   since Rhetoric provides the same functionality.
+
+.. versionadded:: 0.1.7
+
+
+If you use a class as a view, you can use the
+:class:`rhetoric.view.view_defaults` class decorator on the class to provide
+defaults to the view configuration information used by every ``@view_config``
+decorator that decorates a method of that class.
+
+For instance, if you've got a class that has methods that represent "REST
+actions", all which are mapped to the same route, but different request
+methods, instead of this:
+
+.. code-block:: python
+   :linenos:
+
+   from rhetoric import view_config
+
+   class RESTView(object):
+       def __init__(self, request, *args, **kw):
+           self.request = request
+
+       @view_config(route_name='rest', request_method='GET', renderer='json')
+       def get(self):
+           return {'method: 'GET'}
+
+       @view_config(route_name='rest', request_method='POST', renderer='json')
+       def post(self):
+           return {'method: 'POST'}
+
+       @view_config(route_name='rest', request_method='DELETE', renderer='json')
+       def delete(self):
+           return {'method: 'DELETE'}
+
+You can do this:
+
+.. code-block:: python
+   :linenos:
+
+   from rhetoric import view_config
+   from rhetoric import view_defaults
+
+   @view_defaults(route_name='rest', renderer='json')
+   class RESTView(object):
+       def __init__(self, request, *args, **kw):
+           self.request = request
+
+       @view_config(request_method='GET')
+       def get(self):
+           return {'method: 'GET'}
+
+       @view_config(request_method='POST')
+       def post(self):
+           return {'method: 'POST'}
+
+       @view_config(request_method='DELETE')
+       def delete(self):
+           return {'method: 'DELETE'}
+
+In the above example, we were able to take the ``route_name='rest'`` and
+``renderer='json'`` arguments out of the call to each individual ``@view_config``
+statement, because we used a ``@view_defaults`` class decorator to provide
+the argument as a default to each view method it possessed.
+
+Arguments passed to ``@view_config`` will override any default passed to
+``@view_defaults``.
 
 
 Sources

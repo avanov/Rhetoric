@@ -13,13 +13,13 @@ Rhetoric
 .. image:: https://coveralls.io/repos/avanov/Rhetoric/badge.png?branch=develop
         :target: https://coveralls.io/r/avanov/Rhetoric?branch=develop
 
-Status: **Early Development, Unstable API**.
+Status: **Beta, Unstable API**.
 
 Naive implementation of Pyramid-like routes for Django projects.
 
 
-Why is it worth your while?
----------------------------
+Why it is worth your while
+--------------------------
 
 There's a great article on why Pyramid routing subsystem is so convenient for
 web developers -
@@ -31,10 +31,9 @@ provided by these frameworks. And I totally agree with the key points of the art
 are more flexible and convenient for developers writing RESTful services.
 
 The lack of flexibility of standard Django url dispatcher motivated me to
-create this project. I hope it will be useful for you, other django developers,
+create this project. I hope it will be useful for you,
 and if you liked the idea behind Rhetoric URL Dispatcher, please consider
 `Pyramid Web Framework <http://www.pylonsproject.org/>`_ for one of your future projects.
-It has a dozen of features I'd like to see in Django.
 
 
 Project premises

@@ -73,7 +73,7 @@ setup(
     download_url="https://github.com/avanov/Rhetoric",
     keywords="pyramid django routes",
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',

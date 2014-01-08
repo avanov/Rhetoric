@@ -1,5 +1,10 @@
 Changelog
 ================
+* 0.1.7
+
+  * Added support for the ``api_version`` predicate.
+  * Added the ``view_defaults`` decorator.
+
 * 0.1.5
 
   * Feature: added support for ``decorator`` argument of view_config.
