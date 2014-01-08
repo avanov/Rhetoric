@@ -11,10 +11,11 @@ from rhetoric.config.views import ViewsConfiguratorMixin
 from rhetoric.path import caller_package
 from rhetoric.exceptions import ConfigurationError
 from rhetoric.view import view_config
+from rhetoric.view import view_defaults
 from rhetoric.url import route_path, create_django_route
 
 
-__all__ = ['route_path', 'view_config', 'Configurator']
+__all__ = ['route_path', 'view_config', 'view_defaults', 'Configurator']
 
 
 class Configurator(
@@ -25,10 +26,11 @@ class Configurator(
     venusian = venusian
     inspect = inspect
 
-    def __init__(self, route_prefix=None):
+    def __init__(self, route_prefix=None, api_version_getter=None):
         if route_prefix is None:
             route_prefix = ''
         self.route_prefix = route_prefix
+        self.api_version_getter = api_version_getter
 
         self.routes = OrderedDict()
         self.renderers = {}
@@ -118,3 +120,6 @@ class Configurator(
 
     def set_route_prefix(self, prefix):
         self.route_prefix = prefix
+
+    def set_api_version_getter(self, getter_callable):
+        self.api_version_getter = getter_callable

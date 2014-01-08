@@ -9,6 +9,3 @@ class RoutesConfiguratorMixin(object):
             'extra_kwargs': extra_kwargs,
             'viewlist': [],
         }
-
-    def get_route(self, name):
-        return self.routes[name]
