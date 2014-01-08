@@ -25,6 +25,7 @@ def dashboard(request):
              # is explicitly set
              decorator=require_http_methods(["GET", "POST"]))
 def post_on_dashboard(request):
+    request.response.status_code = 201
     return {'method': 'POST'}
 
 

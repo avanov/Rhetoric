@@ -10,7 +10,7 @@ class URLTest(BaseTestCase):
         assert response.status_code == 200
 
         response = self.client.get('/blog/page/page-slug')
-        assert response.status_code == 200
+        assert response.status_code == 201
         json_data = response.content.decode('utf-8')
         assert {'page_slug':'page-slug'} == json.loads(json_data)
 
@@ -24,7 +24,7 @@ class URLTest(BaseTestCase):
 
         # Test POST to the same URL
         response = self.client.post('/dashboard')
-        assert response.status_code == 200
+        assert response.status_code == 201
         assert response.content.decode('utf-8').strip() == 'Dashboard POST'
 
         # Test PUT to the same URL
@@ -39,3 +39,7 @@ class URLTest(BaseTestCase):
     def test_route_path(self):
         url = self.rhetoric.url.route_path('index.dashboard')
         assert url == '/dashboard'
+
+    def test_custom_response_attributes(self):
+        response = self.client.get('/blog/page/page-slug')
+        assert response.content_type == 'application/json; charset=utf-8'

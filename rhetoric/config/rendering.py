@@ -11,7 +11,10 @@ class JsonRendererFactory(object):
         self.name = name
 
     def __call__(self, request, view_response):
-        return HttpResponse(json_encode(view_response), content_type='application/json; charset=utf-8')
+        response = request.response
+        response.content_type = 'application/json; charset=utf-8'
+        response.content = json_encode(view_response)
+        return response
 
 
 class StringRendererFactory(object):
@@ -19,7 +22,10 @@ class StringRendererFactory(object):
         self.name = name
 
     def __call__(self, request, view_response):
-        return HttpResponse(view_response, content_type='text/plain; charset=utf-8')
+        response = request.response
+        response.content_type = 'text/plain; charset=utf-8'
+        response.content = view_response
+        return response
 
 
 class DjangoTemplateRendererFactory(object):
@@ -27,7 +33,12 @@ class DjangoTemplateRendererFactory(object):
         self.name = name
 
     def __call__(self, request, context_dict):
-        return render(request, self.name, context_dict)
+        response = request.response
+        httpresponse_kwargs = {
+            'content_type': response['Content-Type'],
+            'status': response.status_code
+        }
+        return render(request, self.name, context_dict, **httpresponse_kwargs)
 
 
 BUILTIN_RENDERERS = {

@@ -23,7 +23,7 @@ class CsrfProtectedViewDispatchMiddleware(CsrfViewMiddleware):
                 request, view_settings['view'], callback_args, callback_kwargs
             )
 
-        # The callable is not a part of Rhetoric
+        # The callable is a regular django view
         return super(CsrfProtectedViewDispatchMiddleware, self).process_view(
             request, callback, callback_args, callback_kwargs
         )

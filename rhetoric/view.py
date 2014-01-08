@@ -1,5 +1,6 @@
 from django.core.urlresolvers import RegexURLPattern as DjangoRegexURLPattern
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
+from django.http import Http404
 
 import venusian
 

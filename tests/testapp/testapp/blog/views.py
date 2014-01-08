@@ -19,6 +19,8 @@ def api_v1_submit_form_view(request):
 
 @view_config(route_name='blog.page', request_method='GET', renderer='json')
 def blog_page(request, page_slug):
+    # test custom response status api
+    request.response.status_code = 201
     return {
         'page_slug': page_slug
     }
