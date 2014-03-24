@@ -112,8 +112,8 @@ class Configurator(
         return self._pkg_resources_style(dotted)
 
     def _pkg_resources_style(self, value):
-        """
-        This method is taken from Pyramid Web Framework.
+        """ This method is taken from Pyramid Web Framework.
+
         package.module:attr style
         """
         return pkg_resources.EntryPoint.parse('x={}'.format(value)).load(False)

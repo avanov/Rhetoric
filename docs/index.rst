@@ -237,6 +237,10 @@ Predicate Arguments
 
     .. versionadded:: 0.1.7
 
+    Available patterns:
+
+
+
 
 Renderers
 ===========================
@@ -351,9 +355,14 @@ effect, you must return ``request.response``:
        return request.response
 
 
+Request properties
+------------------
+
+``request.json_body`` - http://docs.pylonsproject.org/projects/pyramid/en/latest/api/request.html#pyramid.request.Request.json_body
+
 
 Predicates
-============================
+==========
 
 request_method
 ~~~~~~~~~~~~~~
@@ -363,7 +372,7 @@ api_version
 
 
 @view_defaults Class Decorator
-===============================
+==============================
 
 .. note:: This section is copied from
    `Pyramid Docs <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/viewconfig.html#view-defaults-class-decorator>`_,

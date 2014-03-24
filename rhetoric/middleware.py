@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.middleware.csrf import CsrfViewMiddleware
 
 from rhetoric.view import ViewCallback
+from rhetoric.request import JsonBodyProperty
 
 
 class CsrfProtectedViewDispatchMiddleware(CsrfViewMiddleware):
@@ -13,6 +14,7 @@ class CsrfProtectedViewDispatchMiddleware(CsrfViewMiddleware):
         # set request.response object as in
         # http://docs.pylonsproject.org/projects/pyramid/en/latest/api/request.html#pyramid.request.Request.response
         setattr(request, 'response', HttpResponse())
+        setattr(request, 'json_body', JsonBodyProperty(request))
 
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
