@@ -8,6 +8,7 @@ from rhetoric.config.rendering import RenderingConfiguratorMixin
 from rhetoric.config.rendering import BUILTIN_RENDERERS
 from rhetoric.config.routes import RoutesConfiguratorMixin
 from rhetoric.config.views import ViewsConfiguratorMixin
+from rhetoric.config.adt import ADTConfiguratorMixin
 from rhetoric.path import caller_package
 from rhetoric.exceptions import ConfigurationError
 from rhetoric.view import view_config
@@ -21,7 +22,8 @@ __all__ = ['route_path', 'view_config', 'view_defaults', 'Configurator']
 class Configurator(
     RoutesConfiguratorMixin,
     ViewsConfiguratorMixin,
-    RenderingConfiguratorMixin):
+    RenderingConfiguratorMixin,
+    ADTConfiguratorMixin):
 
     venusian = venusian
     inspect = inspect
@@ -34,6 +36,9 @@ class Configurator(
 
         self.routes = OrderedDict()
         self.renderers = {}
+        # ADT extension
+        # -------------
+        self.adt = {}
 
         self.setup_registry()
 
@@ -85,7 +90,8 @@ class Configurator(
 
         scanner = self.venusian.Scanner(config=self)
         scanner.scan(package, categories=categories, onerror=onerror, ignore=ignore)
-        self.check_consistency()
+        self.check_routes_consistency()
+        self.check_adt_consistency()
 
     def setup_registry(self):
         # Add default renderers
@@ -93,18 +99,7 @@ class Configurator(
         for name, renderer in BUILTIN_RENDERERS.items():
             self.add_renderer(name, renderer)
 
-    def check_consistency(self):
-        for route_name, route in self.routes.items():
-            viewlist = route['viewlist']
-            if not viewlist:
-                raise ConfigurationError(
-                    'Route name "{name}" is not associated with a view callable.'.format(name=route_name)
-                )
-            for route_item in viewlist:
-                if route_item.get('view') is None:
-                    raise ConfigurationError(
-                        'Route name "{name}" is not associated with a view callable.'.format(name=route_name)
-                    )
+
 
     def maybe_dotted(self, dotted):
         if not isinstance(dotted, str):
