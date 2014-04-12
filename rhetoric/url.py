@@ -1,6 +1,7 @@
 import re
 
 from rhetoric.view import RegexURLPattern
+from rhetoric.adt import ADTMeta
 from django.core.urlresolvers import reverse
 
 
@@ -94,6 +95,9 @@ def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=N
                 if not rule:
                     # This default pattern is Pyramid's default.
                     rule = '[^/]+'
+                elif isinstance(rule, ADTMeta):
+                    # rule is an ADT
+                    rule = u'(?:{})'.format(u'|'.join(rule.values()))
 
             result = u"(?P<{match_group_name}>{rule})".format(
                 match_group_name=match_group_name,
