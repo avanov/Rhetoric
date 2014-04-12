@@ -28,6 +28,9 @@ class adt(object):
     __metaclass__ = ADTMeta
     venusian = venusian
 
+    class Mismatch(Exception):
+        pass
+
     @classmethod
     def values(cls):
         return set(cls.__adt__['values'].keys())
@@ -40,7 +43,15 @@ class adt(object):
         try:
             variant = cls.__adt__['values'][value]
         except KeyError:
-            raise
+            raise cls.Mismatch(
+                u'Variant value "{value}" is not a part of the type {type}: {values}'.format(
+                    value=value,
+                    type=cls.__adt__['type'],
+                    values=u', '.join(['{val} => {var}'.format(val=val, var=var)
+                                       for val, var in cls.__adt__['values'].items()])
+                )
+            )
+
         return cls.__adt__['matches'][variant]
 
 
