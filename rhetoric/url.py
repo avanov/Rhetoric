@@ -97,7 +97,7 @@ def create_django_route(name, pattern, rules=None, extra_kwargs=None, viewlist=N
                     rule = '[^/]+'
                 elif isinstance(rule, ADTMeta):
                     # rule is an ADT
-                    rule = u'(?:{})'.format(u'|'.join(rule.values()))
+                    rule = u'(?:{})'.format(u'|'.join([str(v) for v in rule.values()]))
 
             result = u"(?P<{match_group_name}>{rule})".format(
                 match_group_name=match_group_name,
