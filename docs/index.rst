@@ -444,6 +444,141 @@ the argument as a default to each view method it possessed.
 Arguments passed to ``@view_config`` will override any default passed to
 ``@view_defaults``.
 
+ADT
+======
+
+ADT stands for Algebraic Data Type.
+
+.. code-block:: python
+
+    # --------------------------
+    # project/payments/models.py
+    # --------------------------
+    from rhetoric.adt import adt
+
+
+    # Declare a new ADT
+    class PaymentMethod(adt):
+        # Define variants in a form of VARIANT_NAME = variant_value
+        PAYPAL = 'paypal'
+        CHEQUE = 'cheque'
+        DATACASH = 'bank_transfer'
+        ## uncomment the following variant and you will get a configuration error like:
+        ##     "Case payment_processor of PaymentMethod is not exhaustive.
+        ##      Here is the variant that is not matched: GOOGLE_CHECKOUT"
+        ## You will have to implement a payment processor case (see below)
+        ## for the GOOGLE_CHECKOUT variant in order to fix the error.
+        #GOOGLE_CHECKOUT = 'google_checkout'
+
+
+    # -------------------------
+    # project/payments/logic.py
+    # -------------------------
+    from project.payments.models import PaymentMethod
+
+    @PaymentMethod('PAYPAL', 'payment_processor')
+    def process_paypal():
+        pass
+
+    @PaymentMethod('CHEQUE', 'payment_processor')
+    def process_cheque():
+        pass
+
+    @PaymentMethod('DATACASH', 'payment_processor')
+    def process_datacash():
+        pass
+
+    # -------------------------------------------
+    # Here's the essence of ADT Consistency Check
+    # -------------------------------------------
+    ## - Uncomment the following definition and you will get a configuration error like:
+    ## -    "Variant DATACASH of PaymentMethod is already bound to the case payment_processor: process_datacash"
+    ## -
+    ## - You cannot bind variants twice within one case.
+    ##
+    #@PaymentMethod('DATACASH', 'payment_processor')
+    #def process_datacash_error():
+    #    pass
+
+    ## - Uncomment the following definition and you will get a configuration error like:
+    ## -    "Variant AMAZON does not belong to the type PaymentMethod."
+    ## -
+    ## - You will have to add the AMAZON case to the PaymentMethod ADT in order to fix the error.
+    ##
+    #@PaymentMethod('AMAZON', 'payment_processor')
+    #def process_amazon():
+    #    pass
+
+    ## - Uncomment the following definition and you will get a configuration error like:
+    ## -     "Case withdraw_form of PaymentMethod is not exhaustive.
+    ## -      Here is the variant that is not matched: CHEQUE."
+    ## -
+    ## - You will have to implement withdraw forms for all other variants - CHEQUE, DATACASH
+    ## - in order to fix the error.
+    ##
+    #@PaymentMethod('PAYPAL', 'withdraw_form')
+    #class PaypalWitdrawForm(object):
+    #    pass
+    #
+
+    # ------------------------------------------------------
+    # Here's the essence of ADT from developer's perspective
+    # (note the absence of conditional statements such as
+    #  if:/elif:/elif:/.../else: raise NotImplementedError()
+    # )
+    # ------------------------------------------------------
+
+    # ----------------------------
+    # project/payments/__init__.py
+    # ----------------------------
+    from project.payments.models import PaymentMethod
+
+    def includeme(config):
+        RULES = {
+            'engine': PaymentMethod
+        }
+        # The {engine} placeholder will be replaced with the (?:paypal|cheque|bank_transfer) regex.
+        # Note that here we use the same ADT object, that was previously used for defining
+        # cases payment_processor and withdraw_form.
+        config.add_route('payments.withdraw', '/payments/withdraw/{engine}', rules=RULES)
+
+    # -------------------------
+    # project/payments/views.py
+    # -------------------------
+    from rhetoric.view import view_config, view_defaults
+
+
+    @view_defaults(route_name='payments.withdraw', renderer='json')
+    class PaymentsHandler(object)
+        def __init__(self, request, engine):
+            self.request = request
+            self.engine = engine
+            # Note that we will ALWAYS have a proper match here, because this handler
+            # will be reached with only correct HTTP requests
+            # (i.e. engine value is one of the variant values of PaymentMethod).
+            self.payment_strategy = PaymentMethod.match(engine)
+
+        @view_config(request_method='GET', renderer='payments/withdraw_form.html')
+        def show_withdraw_form(self):
+            # Here, ``payment_strategy.withdraw_form`` is one of case implementations
+            # that we defined above with @PaymentMethod(VARIANT, 'withdraw_form').
+            # It always points to the relevant implementation!
+            form = self.payment_strategy.withdraw_form
+            # Render html form
+            return {'form': form}
+
+        @view_config(request_method)
+        def process_payment(request_method='POST'):
+            # Here, ``payment_strategy.payment_processor`` is one of case implementations
+            # that we defined above with @PaymentMethod(VARIANT, 'payment_processor').
+            # It always points to the relevant implementation!
+            processor = self.payment_strategy.payment_processor
+            processor()
+            # Render json response
+            return {'ok': True, 'message': 'Success.'}
+
+
+
 
 Sources
 ============
