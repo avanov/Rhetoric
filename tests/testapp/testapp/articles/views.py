@@ -11,7 +11,6 @@ class ArticlesHandler(object):
 
     @view_config(request_method='GET')
     def show_local_entries(self):
-        print self.region_strategy
         return {
             'language': self.language,
         }
