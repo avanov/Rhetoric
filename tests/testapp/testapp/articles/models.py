@@ -18,7 +18,3 @@ class EnglishArticle(AbstractRegionalArticle):
 @Language.GERMAN('db:articles')
 class GermanArticle(AbstractRegionalArticle):
     pass
-
-@Language.GERMAN('db:articles')
-class OtherArticles(AbstractRegionalArticle):
-    pass
