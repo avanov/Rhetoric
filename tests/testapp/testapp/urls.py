@@ -18,14 +18,5 @@ urlpatterns = patterns('',
 
 # Rhetorical routing
 # ------------------
-api_getter = lambda request: request.META['X-API-VERSION']
-
-config = Configurator()
-config.set_api_version_getter(api_getter)
-config.include('tests.testapp.testapp.index')
-config.include(blog_config, '/blog')
-config.scan(ignore=[
-    # do not scan settings modules
-    re.compile('^project_name.settings[_]?[_a-z09]*$').match,
-])
+from .rhetoric_config import config
 urlpatterns.extend(config.django_urls())

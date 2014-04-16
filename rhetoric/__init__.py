@@ -88,6 +88,8 @@ class Configurator(
         if package is None:
             package = caller_package()
 
+        package = self.maybe_dotted(package)
+
         scanner = self.venusian.Scanner(config=self)
         scanner.scan(package, categories=categories, onerror=onerror, ignore=ignore)
         self.check_routes_consistency()
