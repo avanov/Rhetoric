@@ -476,15 +476,15 @@ ADT stands for Algebraic Data Type.
     # -------------------------
     from project.payments.models import PaymentMethod
 
-    @PaymentMethod('PAYPAL', 'payment_processor')
+    @PaymentMethod.PAYPAL('payment_processor')
     def process_paypal():
         pass
 
-    @PaymentMethod('CHEQUE', 'payment_processor')
+    @PaymentMethod.CHEQUE('payment_processor')
     def process_cheque():
         pass
 
-    @PaymentMethod('DATACASH', 'payment_processor')
+    @PaymentMethod.DATACASH('payment_processor')
     def process_datacash():
         pass
 
@@ -496,16 +496,16 @@ ADT stands for Algebraic Data Type.
     ## -
     ## - You cannot bind variants twice within one case.
     ##
-    #@PaymentMethod('DATACASH', 'payment_processor')
+    #@PaymentMethod.DATACASH('payment_processor')
     #def process_datacash_error():
     #    pass
 
-    ## - Uncomment the following definition and you will get a configuration error like:
-    ## -    "Variant AMAZON does not belong to the type PaymentMethod."
+    ## - Uncomment the following definition and you will get a standard AttributeError:
+    ## -    "AttributeError: type object 'PaymentMethod' has no attribute 'AMAZON'"
     ## -
     ## - You will have to add the AMAZON case to the PaymentMethod ADT in order to fix the error.
     ##
-    #@PaymentMethod('AMAZON', 'payment_processor')
+    #@PaymentMethod.AMAZON('payment_processor')
     #def process_amazon():
     #    pass
 
@@ -516,7 +516,7 @@ ADT stands for Algebraic Data Type.
     ## - You will have to implement withdraw forms for all other variants - CHEQUE, DATACASH
     ## - in order to fix the error.
     ##
-    #@PaymentMethod('PAYPAL', 'withdraw_form')
+    #@PaymentMethod.PAYPAL('withdraw_form')
     #class PaypalWitdrawForm(object):
     #    pass
     #
