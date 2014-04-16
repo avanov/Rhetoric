@@ -11,10 +11,10 @@ class AbstractRegionalArticle(models.Model):
         abstract = True
 
 
-@Language.ENGLISH('db:articles')
+@Language.ENGLISH('store:articles')
 class EnglishArticle(AbstractRegionalArticle):
     pass
 
-@Language.GERMAN('db:articles')
+@Language.GERMAN('store:articles')
 class GermanArticle(AbstractRegionalArticle):
     pass

@@ -1,5 +1,6 @@
 import re
 import venusian
+import six
 
 
 ADT_VARIANT_NAME_RE = re.compile('[A-Z][0-9A-Z_]*')
@@ -97,8 +98,8 @@ class ADTMeta(type):
         return cls
 
 
+@six.add_metaclass(ADTMeta)
 class adt(object):
-    __metaclass__ = ADTMeta
     __adt__ = {}
 
     class Mismatch(Exception):

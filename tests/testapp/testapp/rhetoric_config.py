@@ -10,3 +10,4 @@ config.set_api_version_getter(api_getter)
 
 config.include('tests.testapp.testapp.index')
 config.include(blog_config, '/blog')
+config.include('tests.testapp.testapp.articles')

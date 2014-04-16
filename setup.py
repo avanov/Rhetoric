@@ -49,6 +49,7 @@ setup(
     install_requires=[
         'Django>=1.4',
         'venusian>=1.0a8',
+        'six',
     ],
     test_suite='tests',
     tests_require=['pytest', 'coverage'],
