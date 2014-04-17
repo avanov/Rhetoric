@@ -76,13 +76,13 @@ class ADTMeta(type):
     def __new__(mcs, class_name, bases, attrs):
         cls = type.__new__(mcs, class_name, bases, attrs)
 
-        variants = set()
+        variants = {}
         for attr_name, value in attrs.items():
             if not ADT_VARIANT_NAME_RE.match(attr_name):
-                print attr_name
                 continue
-            setattr(cls, attr_name, ADTVariant(variant_of=cls, name=attr_name, value=value))
-            variants.add(attr_name)
+            variant = ADTVariant(variant_of=cls, name=attr_name, value=value)
+            setattr(cls, attr_name, variant)
+            variants[attr_name] = variant
 
         values = {attrs[variant_name]: variant_name for variant_name in variants}
         cls.__adt__ = {
@@ -94,7 +94,9 @@ class ADTMeta(type):
             'cases': {},
             # dict of value => match instances.
             # Used by .match() for O(1) result retrieval
-            'matches': {}
+            'matches': {
+                variant: {} for variant in variants
+            }
         }
         return cls
 
@@ -115,9 +117,27 @@ class adt(object):
         """
         :rtype: dict
         """
-        try:
-            variant = cls.__adt__['values'][value]
-        except KeyError:
+        variant = None
+        for variant_name, variant_type in cls.__adt__['variants'].items():
+            if isinstance(variant_type.value, six.string_types):
+                primitive_type = True
+            elif isinstance(variant_type.value, six.integer_types):
+                primitive_type = True
+            else:
+                primitive_type = False
+
+            if primitive_type:
+                # We compare primitive types with equality matching
+                if value == variant_type.value:
+                    variant = variant_name
+                    break
+            else:
+                # We compare non-primitive types with type checking
+                if isinstance(value, variant_type.value):
+                    variant = variant_name
+                    break
+
+        if variant is None:
             raise cls.Mismatch(
                 u'Variant value "{value}" is not a part of the type {type}: {values}'.format(
                     value=value,
