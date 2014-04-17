@@ -3,7 +3,7 @@ import venusian
 import six
 
 
-ADT_VARIANT_NAME_RE = re.compile('[A-Z][0-9A-Z_]*')
+ADT_VARIANT_NAME_RE = re.compile('^[A-Z][0-9A-Z_]*$')
 
 
 class ADTVariant(object):
@@ -79,6 +79,7 @@ class ADTMeta(type):
         variants = set()
         for attr_name, value in attrs.items():
             if not ADT_VARIANT_NAME_RE.match(attr_name):
+                print attr_name
                 continue
             setattr(cls, attr_name, ADTVariant(variant_of=cls, name=attr_name, value=value))
             variants.add(attr_name)
@@ -102,7 +103,7 @@ class ADTMeta(type):
 class adt(object):
     __adt__ = {}
 
-    class Mismatch(Exception):
+    class Mismatch(BaseException):
         pass
 
     @classmethod
