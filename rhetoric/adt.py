@@ -181,7 +181,6 @@ class adt(object):
             )
 
         def matcher(value):
-            print value
             for variant, fun in checked_cases:
                 if variant.is_primitive_type():
                     if value == variant.value:
