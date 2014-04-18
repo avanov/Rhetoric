@@ -40,3 +40,5 @@ class ADTTest(BaseTestCase):
         ]
         result = logic.filter_by_oid(instructions, 1)
         assert len(result) == 4
+
+        assert logic.filter_by_oid(instructions, 1) == logic.filter_by_oid_alt(instructions, 1)

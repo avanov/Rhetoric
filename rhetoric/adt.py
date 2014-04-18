@@ -20,6 +20,15 @@ class ADTVariant(object):
         self.name = name
         self.value = value
 
+    def is_primitive_type(self):
+        if isinstance(self.value, six.string_types):
+            primitive_type = True
+        elif isinstance(self.value, six.integer_types):
+            primitive_type = True
+        else:
+            primitive_type = False
+        return primitive_type
+
 
     def __call__(self, case_name):
         """ This method is called when we declare variant cases. For instance:
@@ -105,7 +114,10 @@ class ADTMeta(type):
 class adt(object):
     __adt__ = {}
 
-    class Mismatch(BaseException):
+    class Mismatch(Exception):
+        pass
+
+    class PatternError(Exception):
         pass
 
     @classmethod
@@ -113,20 +125,16 @@ class adt(object):
         return set(cls.__adt__['values'].keys())
 
     @classmethod
-    def match(cls, value):
+    def match(cls, value, inline_cases=None):
         """
-        :rtype: dict
+        :rtype: dict or :class:`types.FunctionType`
         """
+        if inline_cases:
+            return cls._inline_match(value, inline_cases)
+
         variant = None
         for variant_name, variant_type in cls.__adt__['variants'].items():
-            if isinstance(variant_type.value, six.string_types):
-                primitive_type = True
-            elif isinstance(variant_type.value, six.integer_types):
-                primitive_type = True
-            else:
-                primitive_type = False
-
-            if primitive_type:
+            if variant_type.is_primitive_type():
                 # We compare primitive types with equality matching
                 if value == variant_type.value:
                     variant = variant_name
@@ -148,6 +156,44 @@ class adt(object):
             )
 
         return cls.__adt__['matches'][variant]
+
+    @classmethod
+    def _inline_match(cls, value, inline_cases=None):
+        all_cases = set(cls.__adt__['variants'].keys())
+        inline_cases = inline_cases.items()
+        for variant, fun in inline_cases:
+            if variant.variant_of is not cls:
+                raise cls.PatternError(
+                    'Variant {variant} does not belong to the type {type}'.format(
+                        variant=str(variant),
+                        type=cls.__adt__['type'],
+                    )
+                )
+            all_cases.remove(variant.name)
+        if all_cases:
+            raise cls.PatternError(
+                'Inline cases are not exhaustive.\n'
+                'Here is the variant that is not matched: {variant} '.format(
+                    variant=list(all_cases)[0]
+                )
+            )
+
+        for variant, fun in inline_cases:
+            if variant.is_primitive_type():
+                if value == variant.value:
+                    return fun
+            else:
+                if isinstance(value, variant.value):
+                    return fun
+
+        raise cls.Mismatch(
+            u'Variant value "{value}" is not a part of the type {type}: {values}'.format(
+                value=value,
+                type=cls.__adt__['type'],
+                values=u', '.join(['{val} => {var}'.format(val=val, var=var)
+                                   for val, var in cls.__adt__['values'].items()])
+            )
+        )
 
     def __init__(self):
         raise TypeError('adt is a type, not an instance.')
