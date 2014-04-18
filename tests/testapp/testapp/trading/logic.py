@@ -15,9 +15,10 @@ def filter_by_oid(instructions, oid):
     :return: list of instructions that reference ``oid``
     :rtype: list
     """
-    return filter(
+    # In python3, filter, map, zip, etc return an object which is iterable, but not a list.
+    return list(filter(
         lambda i: Instruction.match(i)['filter_by_oid'](i, oid),
-        instructions)
+        instructions))
 
 
 @Instruction.ORDER('filter_by_oid')
@@ -75,6 +76,7 @@ def filter_by_oid_alt(instructions, oid):
     :return: list of instructions that reference ``oid``
     :rtype: list
     """
-    return filter(
+    # In python3, filter, map, zip, etc return an object which is iterable, but not a list.
+    return list(filter(
         lambda i: inline_matcher(i)(i, oid),
-        instructions)
+        instructions))

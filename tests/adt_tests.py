@@ -39,6 +39,6 @@ class ADTTest(BaseTestCase):
             models.CancelReplace(xr_tid=2, new_price=Decimal('20.0000'), new_size=20),
         ]
         result = logic.filter_by_oid(instructions, 1)
-        assert len(result) == 4
+        assert len(list(result)) == 4
 
         assert logic.filter_by_oid(instructions, 1) == logic.filter_by_oid_alt(instructions, 1)
