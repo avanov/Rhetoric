@@ -89,11 +89,23 @@ class ViewsConfiguratorMixin(object):
             request_method = {request_method}
         request_method = set(request_method)
 
-        if len(request_method) > 1 and validate_form and not form_data:
-            raise ConfigurationError(
-                'You must explicitly specify the form_data parameter, because one of the '
-                'view handlers accepts multiple request methods: {route_name}'.format(route_name=route_name)
-            )
+        if validate_form:
+            if len(request_method) > 1 and not form_data:
+                raise ConfigurationError(
+                    'You must explicitly specify the form_data parameter, because one of the '
+                    'view handlers accepts multiple request methods: {route_name}'.format(route_name=route_name)
+                )
+
+            django_supported_form_methods = {'GET', 'POST'}
+            target_methods = request_method.copy() | django_supported_form_methods
+            unsupported_methods = target_methods ^ django_supported_form_methods
+            if unsupported_methods and not form_data:
+                raise ConfigurationError(
+                    'You must explicitly specify the form_data parameter, because Django '
+                    'does not create form dict for methods {methods}: {route_name}'.format(
+                        methods=unsupported_methods,
+                        route_name=route_name)
+                )
 
         if api_version is not None:
             if isinstance(api_version, str):
