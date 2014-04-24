@@ -88,6 +88,17 @@ class ViewCallback(object):
             if not match:
                 return False
 
+        # form validation
+        if predicates['validate_form']:
+            if view_settings['form_data'] is None:
+                form_data = request.POST
+            else:
+                form_data = view_settings['form_data'](request)
+            form = predicates['validate_form'](form_data)
+            setattr(request, 'form', form)
+            if not form.is_valid():
+                return False
+
         return True
 
     def process_callback_response(self, request, response, view_settings):
