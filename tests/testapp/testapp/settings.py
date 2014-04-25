@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'tests.testapp.testapp.articles',
+    'tests.testapp.testapp.trading',
 )
 
 MIDDLEWARE_CLASSES = (

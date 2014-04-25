@@ -1,5 +1,6 @@
 from rhetoric.view import view_config, view_defaults
 from ..types import Language
+from .forms import NewArticleForm
 
 
 @view_defaults(route_name='articles.regional.index', renderer='json')
@@ -14,3 +15,11 @@ class ArticlesHandler(object):
         return {
             'language': self.language,
         }
+
+    @view_config(request_method='POST', validate_form=NewArticleForm)
+    def save_new_acrticle(self):
+        return {'ok': True}
+
+    @view_config(request_method='POST')
+    def on_form_error(self):
+        return {'ok': False, 'message': 'Form validation error.'}

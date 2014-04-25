@@ -13,6 +13,8 @@ class ViewsConfiguratorMixin(object):
                  request_method=None,
                  attr=None,
                  api_version=None,
+                 validate_form=None,
+                 form_data=None,
                  decorator=None,
                  check_csrf=False,
                  renderer=None):
@@ -38,6 +40,9 @@ class ViewsConfiguratorMixin(object):
         :type attr: str
         :param api_version:
         :type api_version: str or tuple
+        :param validate_form: Django form class or None
+        :param form_data: callable that accepts ``request`` and returns an object that will be passed
+                          to ``validate_form``.
         :param decorator:
         :param check_csrf:
         :param renderer:
@@ -84,6 +89,24 @@ class ViewsConfiguratorMixin(object):
             request_method = {request_method}
         request_method = set(request_method)
 
+        if validate_form:
+            if len(request_method) > 1 and not form_data:
+                raise ConfigurationError(
+                    'You must explicitly specify the form_data parameter, because one of the '
+                    'view handlers accepts multiple request methods: {route_name}'.format(route_name=route_name)
+                )
+
+            django_supported_form_methods = {'GET', 'POST'}
+            target_methods = request_method.copy() | django_supported_form_methods
+            unsupported_methods = target_methods ^ django_supported_form_methods
+            if unsupported_methods and not form_data:
+                raise ConfigurationError(
+                    'You must explicitly specify the form_data parameter, because Django '
+                    'does not create form dict for methods {methods}: {route_name}'.format(
+                        methods=unsupported_methods,
+                        route_name=route_name)
+                )
+
         if api_version is not None:
             if isinstance(api_version, str):
                 api_version = {api_version}
@@ -100,10 +123,12 @@ class ViewsConfiguratorMixin(object):
             'view': view,
             'attr': attr,
             'api_version_getter': self.api_version_getter,
+            'form_data': form_data,
             'renderer': self.get_renderer(renderer),
             'predicates': {
                 'request_method': request_method,
-                'api_version': api_version
+                'api_version': api_version,
+                'validate_form': validate_form,
                 },
         }
         route['viewlist'].append(route_item)

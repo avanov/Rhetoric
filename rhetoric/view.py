@@ -64,7 +64,8 @@ class ViewCallback(object):
 
         # cache
         for view_settings in self.viewlist:
-            if self.check_predicates(view_settings, request, args, kwargs):
+            passed, request = self.check_predicates(view_settings, request, args, kwargs)
+            if passed:
                 setattr(request, 'rhetoric_view_settings', view_settings)
                 return view_settings
         raise Http404
@@ -74,7 +75,7 @@ class ViewCallback(object):
 
         # request method
         if request.method not in predicates['request_method']:
-            return False
+            return False, request
 
         # api version
         api_version_getter = view_settings['api_version_getter']
@@ -86,9 +87,21 @@ class ViewCallback(object):
                 if match:
                     break
             if not match:
-                return False
+                return False, request
 
-        return True
+        # form validation
+        if predicates['validate_form']:
+            if view_settings['form_data'] is None:
+                form_data = request.POST
+            else:
+                form_data = view_settings['form_data'](request)
+            form = predicates['validate_form'](form_data)
+
+            setattr(request, 'form', form)
+            if not form.is_valid():
+                return False, request
+
+        return True, request
 
     def process_callback_response(self, request, response, view_settings):
         if isinstance(response, HttpResponse):
