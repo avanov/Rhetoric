@@ -48,7 +48,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Django>=1.4',
-        'venusian>=1.0a8',
+        'venusian>=1.0',
         'six',
     ],
     test_suite='tests',
