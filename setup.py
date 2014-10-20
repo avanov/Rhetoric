@@ -44,11 +44,11 @@ class PyTest(TestCommand):
 
 setup(
     name='Rhetoric',
-    version='0.1.12',
+    version='0.1.13',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Django>=1.4',
-        'venusian>=1.0a8',
+        'venusian>=1.0',
         'six',
     ],
     test_suite='tests',
@@ -86,6 +86,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware',

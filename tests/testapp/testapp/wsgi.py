@@ -11,6 +11,10 @@ import re
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testapp.settings")
+# We must explicitly setup django here (starting from Django 1.7)
+import django
+if django.VERSION[:2] >= (1, 7):
+    django.setup()
 
 from .rhetoric_config import config
 

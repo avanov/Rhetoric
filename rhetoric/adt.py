@@ -58,16 +58,20 @@ class ADTVariant(object):
                 cases_dict = self.variant_of.__adt__['cases']
                 case_implementations = cases_dict[case_name]
                 if case_implementations[self.name] is not None:
-                    raise TypeError(
-                        'Variant {variant} of {type} is already bound to the case {case} => {impl}. '
-                        'Conflict at {target}'.format(
-                            variant=self.name,
-                            type=self.variant_of.__adt__['type'],
-                            case=case_name,
-                            impl=str(case_implementations[self.name]),
-                            target=str(obj)
+                    # venusian may scan the same declarations multiple times during the app initialization,
+                    # therefore we allow re-assignment of the same case implementations and prohibit
+                    # any new implementations
+                    if case_implementations[self.name] is not obj:
+                        raise TypeError(
+                            'Variant {variant} of {type} is already bound to the case {case} => {impl}. '
+                            'Conflict at {target}'.format(
+                                variant=self.name,
+                                type=self.variant_of.__adt__['type'],
+                                case=case_name,
+                                impl=str(case_implementations[self.name]),
+                                target=str(obj)
+                            )
                         )
-                    )
                 case_implementations[self.name] = obj
                 # Re-calculate matches
                 self.variant_of.__adt__['matches'] = {

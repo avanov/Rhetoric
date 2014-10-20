@@ -34,7 +34,9 @@ class URLTest(BaseTestCase):
 
     def test_non_rhetoric_urls(self):
         response = self.client.get('/admin/')
-        assert response.status_code == 200
+        # redirects to login page are also valid:
+        # (/admin/login/?next=/admin/)
+        assert response.status_code in {200, 302}
 
     def test_route_path(self):
         url = self.rhetoric.url.route_path('index.dashboard')
