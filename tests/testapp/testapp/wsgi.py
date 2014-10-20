@@ -11,6 +11,8 @@ import re
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testapp.settings")
+import django
+django.setup()
 
 from .rhetoric_config import config
 
