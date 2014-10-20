@@ -1,5 +1,10 @@
 Changelog
 ================
+* 0.1.13
+
+  * Depend on Venusian 1.0 and higher.
+  * Allow re-assignment of the same ADT case implementations on subsequent venusian scans.
+
 * 0.1.9
 
   * Added support for the ``request.json_body`` property.
