@@ -14,7 +14,10 @@ class JsonRendererFactory(object):
         response = request.response
         response.content_type = 'application/json; charset=utf-8'
         response.content = json_encode(view_response)
-        return response
+        return HttpResponse(response.content,
+                            content_type=response.content_type,
+                            status=response.status_code
+                            )
 
 
 class StringRendererFactory(object):

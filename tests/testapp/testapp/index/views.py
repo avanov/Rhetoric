@@ -105,3 +105,11 @@ class DashboardAPIv2(object):
             'version': 2,
             'method': 'POST'
         }
+
+@view_config(route_name='index.json_body', request_method='POST', renderer='json')
+def json_body(request):
+    data = request.json_body
+    if data:
+        if 'key' in data:
+            return {'result': 'key'}
+    return {'result': 'no-key'}

@@ -44,4 +44,4 @@ class URLTest(BaseTestCase):
 
     def test_custom_response_attributes(self):
         response = self.client.get('/blog/page/page-slug')
-        assert response.content_type == 'application/json; charset=utf-8'
+        assert response['Content-Type'] == 'application/json; charset=utf-8'
