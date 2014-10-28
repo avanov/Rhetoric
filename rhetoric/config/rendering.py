@@ -1,9 +1,21 @@
 from django.http import HttpResponse
+from django.db.models.query import ValuesListQuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
 
 
-json_encode = DjangoJSONEncoder().encode
+class AdvancedJSONEncoder(DjangoJSONEncoder):
+    """ JSONEncoder subclass that knows how to encode ValuesListQuerySet to lists.
+    """
+    def default(self, o):
+        # See "Date Time String Format" in the ECMA-262 specification.
+        if isinstance(o, ValuesListQuerySet):
+            return list(o)
+        else:
+            return super(AdvancedJSONEncoder, self).default(o)
+
+
+json_encode = AdvancedJSONEncoder().encode
 
 
 class JsonRendererFactory(object):
