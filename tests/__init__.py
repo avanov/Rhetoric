@@ -19,5 +19,3 @@ class BaseTestCase(unittest.TestCase):
         self.client = Client(**DEFAULT_HEADERS)
         self.rhetoric = rhetoric
         self.wsgi_app = application
-
-
