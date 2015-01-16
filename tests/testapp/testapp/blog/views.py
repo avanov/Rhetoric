@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from rhetoric import view_config
 
+from . import forms
+
 
 @view_config(route_name='test.new.routes')
 def default_view(request, param):
@@ -28,4 +30,9 @@ def blog_page(request, page_slug):
 
 @view_config(route_name='blog.page', request_method='POST', renderer='json')
 def blog_page_post(request, page_slug):
-    return HttpResponse(page_slug)
+    form = forms.BlogPostForm(request.json_body)
+    if not form.is_valid():
+        return HttpResponse('Error')
+
+    data = form.cleaned_data
+    return HttpResponse(data['slug'])
