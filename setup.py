@@ -44,7 +44,7 @@ class PyTest(TestCommand):
 
 setup(
     name='Rhetoric',
-    version='0.1.17',
+    version='0.1.18',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Django>=1.4',
