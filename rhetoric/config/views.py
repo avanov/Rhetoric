@@ -1,5 +1,6 @@
 import inspect
 
+import rhetoric.config.predicates
 from rhetoric.exceptions import ConfigurationError
 from rhetoric.util import viewdefaults
 
@@ -132,6 +133,39 @@ class ViewsConfiguratorMixin(object):
                 },
         }
         route['viewlist'].append(route_item)
+
+    def add_view_predicate(self, name, factory, weighs_more_than=None,
+                           weighs_less_than=None):
+        """
+        Adds a view predicate factory.  The associated view predicate can
+        later be named as a keyword argument to
+        :meth:`rhetoric.config.Configurator.add_view` in the
+        ``predicates`` anonymous keyword argument dictionary.
+
+        ``name`` should be the name of the predicate.  It must be a valid
+        Python identifier (it will be used as a keyword argument to
+        ``add_view`` by others).
+
+        ``factory`` should be a :term:`predicate factory` or :term:`dotted
+        Python name` which refers to a predicate factory.
+
+        See :ref:`view_and_route_predicates` for more information.
+        """
+        self._add_predicate(
+            'view',
+            name,
+            factory,
+            weighs_more_than=weighs_more_than,
+            weighs_less_than=weighs_less_than
+            )
+
+
+    def add_default_view_predicates(self):
+        p = rhetoric.config.predicates
+        for name, factory in (
+            ('request_method2', p.RequestMethodPredicate),
+            ):
+            self.add_view_predicate(name, factory)
 
 
 class ClassViewWrapper(object):
