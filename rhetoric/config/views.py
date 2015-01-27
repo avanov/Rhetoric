@@ -18,7 +18,8 @@ class ViewsConfiguratorMixin(object):
                  form_data=None,
                  decorator=None,
                  check_csrf=False,
-                 renderer=None):
+                 renderer=None,
+                 **predicates):
         """
 
         :param view: callable
@@ -47,6 +48,12 @@ class ViewsConfiguratorMixin(object):
         :param decorator:
         :param check_csrf:
         :param renderer:
+        :param predicates: Pass a key/value pair here to use a third-party predicate
+                           registered via
+                           :meth:`rhetoric.config.Configurator.add_view_predicate`.
+                           More than one key/value pair can be used at the same time. See
+                           :ref:`view_and_route_predicates` for more information about
+                           third-party predicates.
         :return: :raise ConfigurationError:
         """
         try:
@@ -85,28 +92,35 @@ class ViewsConfiguratorMixin(object):
         # Register predicates
         # -------------------------------------
         if request_method is None:
-            request_method = {'GET'}
-        elif isinstance(request_method, str):
-            request_method = {request_method}
-        request_method = set(request_method)
-
-        if validate_form:
-            if len(request_method) > 1 and not form_data:
-                raise ConfigurationError(
-                    'You must explicitly specify the form_data parameter, because one of the '
-                    'view handlers accepts multiple request methods: {route_name}'.format(route_name=route_name)
+            request_method = ('GET',)
+        pvals = predicates.copy()
+        pvals.update(
+            dict(
+                request_method=request_method,
                 )
+            )
+        predlist = self.get_predlist('view')
+        _weight_, preds, _phash_ = predlist.make(self, **pvals)
 
-            django_supported_form_methods = {'GET', 'POST'}
-            target_methods = request_method.copy() | django_supported_form_methods
-            unsupported_methods = target_methods ^ django_supported_form_methods
-            if unsupported_methods and not form_data:
-                raise ConfigurationError(
-                    'You must explicitly specify the form_data parameter, because Django '
-                    'does not create form dict for methods {methods}: {route_name}'.format(
-                        methods=unsupported_methods,
-                        route_name=route_name)
-                )
+
+        # TODO: resolve as a custom predicate
+        # if validate_form:
+        #     if len(request_method) > 1 and not form_data:
+        #         raise ConfigurationError(
+        #             'You must explicitly specify the form_data parameter, because one of the '
+        #             'view handlers accepts multiple request methods: {route_name}'.format(route_name=route_name)
+        #         )
+        #
+        #     django_supported_form_methods = {'GET', 'POST'}
+        #     target_methods = request_method.copy() | django_supported_form_methods
+        #     unsupported_methods = target_methods ^ django_supported_form_methods
+        #     if unsupported_methods and not form_data:
+        #         raise ConfigurationError(
+        #             'You must explicitly specify the form_data parameter, because Django '
+        #             'does not create form dict for methods {methods}: {route_name}'.format(
+        #                 methods=unsupported_methods,
+        #                 route_name=route_name)
+        #         )
 
         if api_version is not None:
             if isinstance(api_version, str):
@@ -126,11 +140,7 @@ class ViewsConfiguratorMixin(object):
             'api_version_getter': self.api_version_getter,
             'form_data': form_data,
             'renderer': self.get_renderer(renderer),
-            'predicates': {
-                'request_method': request_method,
-                'api_version': api_version,
-                'validate_form': validate_form,
-                },
+            'predicates': preds,
         }
         route['viewlist'].append(route_item)
 
@@ -163,7 +173,7 @@ class ViewsConfiguratorMixin(object):
     def add_default_view_predicates(self):
         p = rhetoric.config.predicates
         for name, factory in (
-            ('request_method2', p.RequestMethodPredicate),
+            ('request_method', p.RequestMethodPredicate),
             ):
             self.add_view_predicate(name, factory)
 

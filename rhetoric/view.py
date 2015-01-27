@@ -73,9 +73,11 @@ class ViewCallback(object):
     def check_predicates(self, view_settings, request, req_args, req_kw):
         predicates = view_settings['predicates']
 
-        # request method
-        if request.method not in predicates['request_method']:
-            return False, request
+        # here predicate is an instance object
+        for predicate in predicates:
+            is_passed = predicate(None, request)
+            if not is_passed:
+                return is_passed, request
 
         # api version
         api_version_getter = view_settings['api_version_getter']

@@ -136,6 +136,7 @@ class PredicateList(object):
                 if isinstance(val, not_):
                     realval = val.value
                     notted = True
+                # This is where we call __init__ of a predicate class
                 pred = predicate_factory(realval, config)
                 if notted:
                     pred = Notted(pred)
