@@ -1,5 +1,11 @@
 Changelog
 ================
+* 0.2.0
+
+  * Ported `custom predicates <http://docs.pylonsproject.org/docs/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_view_predicate>`_
+  * Removed support for the ``api_version`` predicate.
+
+
 * 0.1.13
 
   * Depend on Venusian 1.0 and higher.
