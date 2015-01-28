@@ -9,6 +9,7 @@ from rhetoric.config.rendering import BUILTIN_RENDERERS
 from rhetoric.config.routes import RoutesConfiguratorMixin
 from rhetoric.config.views import ViewsConfiguratorMixin
 from rhetoric.config.adt import ADTConfiguratorMixin
+from rhetoric.config.util import PredicateList
 from rhetoric.path import caller_package
 from rhetoric.exceptions import ConfigurationError
 from rhetoric.view import view_config
@@ -28,17 +29,19 @@ class Configurator(
     venusian = venusian
     inspect = inspect
 
-    def __init__(self, route_prefix=None, api_version_getter=None):
+    def __init__(self, route_prefix=None):
         if route_prefix is None:
             route_prefix = ''
         self.route_prefix = route_prefix
-        self.api_version_getter = api_version_getter
 
         self.routes = OrderedDict()
         self.renderers = {}
-        # ADT extension
+        # ADT machinery
         # -------------
         self.adt = {}
+        # Predicates machinery
+        # --------------------
+        self.predicates = PredicateList()
 
         self.setup_registry()
 
@@ -95,13 +98,19 @@ class Configurator(
         self.check_routes_consistency()
         self.check_adt_consistency()
 
+    def get_predlist(self, name):
+        """ This is a stub method that simply has the same signature as pyramid's version,
+        but does nothing but returning ``self.predicates``
+        """
+        return self.predicates
+
     def setup_registry(self):
         # Add default renderers
         # ---------------------
         for name, renderer in BUILTIN_RENDERERS.items():
             self.add_renderer(name, renderer)
 
-
+        self.add_default_view_predicates()
 
     def maybe_dotted(self, dotted):
         if not isinstance(dotted, str):
@@ -115,8 +124,19 @@ class Configurator(
         """
         return pkg_resources.EntryPoint.parse('x={}'.format(value)).load(False)
 
+    def _add_predicate(self, type, name, factory, weighs_more_than=None, weighs_less_than=None):
+        """ This method is a highly simplified equivalent to what you can find in Pyramid.
+
+        :param type: may be only 'view' at the moment
+        :type type: str
+        :param name: valid python identifier string.
+        :type name: str
+        :param weighs_more_than: not used at the moment
+        :param weighs_less_than: not used at the moment
+        """
+        predlist = self.get_predlist(type)
+        predlist.add(name, factory, weighs_more_than=weighs_more_than,
+                     weighs_less_than=weighs_less_than)
+
     def set_route_prefix(self, prefix):
         self.route_prefix = prefix
-
-    def set_api_version_getter(self, getter_callable):
-        self.api_version_getter = getter_callable

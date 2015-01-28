@@ -4,8 +4,6 @@ from django.http import Http404
 
 import venusian
 
-from rhetoric.predicates import match_api_version
-
 
 class view_config(object):
     venusian = venusian
@@ -73,33 +71,11 @@ class ViewCallback(object):
     def check_predicates(self, view_settings, request, req_args, req_kw):
         predicates = view_settings['predicates']
 
-        # request method
-        if request.method not in predicates['request_method']:
-            return False, request
-
-        # api version
-        api_version_getter = view_settings['api_version_getter']
-        if predicates['api_version'] and api_version_getter:
-            request_api_version = api_version_getter(request)
-            match = False
-            for allowed_api_pattern in predicates['api_version']:
-                match = match_api_version(request_api_version, allowed_api_pattern)
-                if match:
-                    break
-            if not match:
-                return False, request
-
-        # form validation
-        if predicates['validate_form']:
-            if view_settings['form_data'] is None:
-                form_data = request.POST
-            else:
-                form_data = view_settings['form_data'](request)
-            form = predicates['validate_form'](form_data)
-
-            setattr(request, 'form', form)
-            if not form.is_valid():
-                return False, request
+        # here predicate is an instance object
+        for predicate in predicates:
+            is_passed = predicate(None, request)
+            if not is_passed:
+                return is_passed, request
 
         return True, request
 
