@@ -364,11 +364,7 @@ Request properties
 Predicates
 ==========
 
-request_method
-~~~~~~~~~~~~~~
-
-api_version
-~~~~~~~~~~~
+http://docs.pylonsproject.org/docs/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_view_predicate
 
 
 @view_defaults Class Decorator
