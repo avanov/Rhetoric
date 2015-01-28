@@ -29,11 +29,10 @@ class Configurator(
     venusian = venusian
     inspect = inspect
 
-    def __init__(self, route_prefix=None, api_version_getter=None):
+    def __init__(self, route_prefix=None):
         if route_prefix is None:
             route_prefix = ''
         self.route_prefix = route_prefix
-        self.api_version_getter = api_version_getter
 
         self.routes = OrderedDict()
         self.renderers = {}
@@ -141,6 +140,3 @@ class Configurator(
 
     def set_route_prefix(self, prefix):
         self.route_prefix = prefix
-
-    def set_api_version_getter(self, getter_callable):
-        self.api_version_getter = getter_callable

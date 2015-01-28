@@ -16,7 +16,7 @@ class ArticlesHandler(object):
             'language': self.language,
         }
 
-    @view_config(request_method='POST', validate_form=NewArticleForm)
+    @view_config(request_method='POST', validate_form=('POST', NewArticleForm))
     def save_new_acrticle(self):
         return {'ok': True}
 
