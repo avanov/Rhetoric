@@ -122,7 +122,14 @@ class Configurator(
 
         package.module:attr style
         """
-        return pkg_resources.EntryPoint.parse('x={}'.format(value)).load(False)
+        # Calling EntryPoint.load with an argument is deprecated.
+        # See https://pythonhosted.org/setuptools/history.html#id8
+        ep = pkg_resources.EntryPoint.parse('x={}'.format(value))
+        if hasattr(ep, 'resolve'):
+            # setuptools>=10.2
+            return ep.resolve()  # pragma: NO COVER
+        else:
+            return ep.load(False)  # pragma: NO COVER
 
     def _add_predicate(self, type, name, factory, weighs_more_than=None, weighs_less_than=None):
         """ This method is a highly simplified equivalent to what you can find in Pyramid.
