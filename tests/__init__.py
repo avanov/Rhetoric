@@ -1,6 +1,5 @@
 import unittest
 import os
-import re
 
 
 class BaseTestCase(unittest.TestCase):
