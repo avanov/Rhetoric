@@ -1,5 +1,10 @@
 Changelog
 ================
+* 0.2.3
+
+  * Cache ``request.json_body`` value after the first access to the attribute.
+
+
 * 0.2.0
 
   * Ported `custom predicates <http://docs.pylonsproject.org/docs/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_view_predicate>`_

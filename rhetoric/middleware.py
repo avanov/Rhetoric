@@ -6,15 +6,19 @@ from .view import ViewCallback
 from .compat import text_
 
 
+def json_body_getter(request_instance):
+    if hasattr(request_instance, '_json_body'):
+        return request_instance._json_body
+    json_body = json.loads(text_(request_instance.read(), request_instance.encoding or 'utf-8'))
+    setattr(request_instance, '_json_body', json_body)
+    return json_body
+
+
 class CsrfProtectedViewDispatchMiddleware(CsrfViewMiddleware):
 
     def __init__(self):
         super(CsrfProtectedViewDispatchMiddleware, self).__init__()
-        self.add_property(
-            HttpRequest,
-            'json_body',
-            lambda request: json.loads(text_(request.read(), request.encoding or 'utf-8'))
-        )
+        self.add_property(HttpRequest, 'json_body', json_body_getter)
 
     def process_request(self, request):
         # We assume here that CsrfViewMiddleware doesn't have the process_request method
