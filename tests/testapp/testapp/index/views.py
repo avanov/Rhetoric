@@ -108,7 +108,14 @@ class DashboardAPIv2(object):
 
 @view_config(route_name='index.json_body', request_method='POST', renderer='json')
 def json_body(request):
+    # For testing purposes we access json_body twice:
+    # First access to request.json_body reads and deserializes request body
+    assert not hasattr(request, '_json_body')
     data = request.json_body
+    # Second access hits a cached value
+    assert hasattr(request, '_json_body')
+    data = request.json_body
+    assert data is request._json_body
     if data:
         if 'key' in data:
             return {'result': 'key'}
